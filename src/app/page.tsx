@@ -21,7 +21,9 @@ export default function Home() {
     >
       <div className="justify-center items-center">
         <LogoAnimation logo={choosenColor.logo} />
-        <div className={`${choosenColor.text} text-2xl mt-4 text-center`}>
+        <div
+          className={`${choosenColor.text} md:text-2xl text-sm mt-4 text-center`}
+        >
           <p className="font-insitutrial">Agence d’architecture</p>
           <p className="font-insitutrial">
             Arthur Rundstadler + Charlotte Sampson
