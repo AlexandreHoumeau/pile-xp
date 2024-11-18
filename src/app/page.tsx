@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { LogoAnimation } from "../components/LogoAnimation";
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
       className={`grid ${choosenColor?.bg} justify-center items-center min-h-screen`}
     >
       <div className="justify-center items-center">
-        <LogoAnimation logo={choosenColor?.logo!} />
+        <LogoAnimation logo={choosenColor.logo} />
         <div className="transition-opacity ease-in duration-700 text-center">
           <p>Agence d’architecture</p>
           <p>Arthur Rundstadler + Charlotte Sampson</p>
