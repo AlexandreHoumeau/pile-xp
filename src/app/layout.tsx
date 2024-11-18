@@ -1,5 +1,8 @@
+import { WithAuthenticationContext } from "@/contexts/AuthContext";
+import WithAdminProtection from "@/contexts/WithAdminProtection";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -28,7 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <WithAuthenticationContext
+          initialState={{
+            isLoggedIn: false,
+          }}
+        >
+          <WithAdminProtection>{children}</WithAdminProtection>
+        </WithAuthenticationContext>
       </body>
     </html>
   );
