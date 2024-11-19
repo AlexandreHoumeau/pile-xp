@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        insitutrial: ["var(--font-insitutrial-regular)"],
+        insitutrial_bold: ["var(--font-insitutrial-bold)"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
