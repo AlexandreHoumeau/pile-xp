@@ -1,5 +1,4 @@
 import { WithAuthenticationContext } from "@/contexts/AuthContext";
-import WithAdminProtection from "@/contexts/WithAdminProtection";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
@@ -35,7 +34,7 @@ export default function RootLayout({
             isLoggedIn: false,
           }}
         >
-          <WithAdminProtection>{children}</WithAdminProtection>
+          {children}
         </WithAuthenticationContext>
       </body>
     </html>

@@ -1,10 +1,12 @@
 "use client";
+import { supabase } from "@/utils/supabaseClient";
 import {
   AuthTokenResponsePassword,
   Session,
   User,
 } from "@supabase/supabase-js";
-import { createContext, useContext, useReducer } from "react";
+import Error from "next/error";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 export const AuthContext = createContext<AuthenticationState & AuthActions>(
   undefined!
@@ -12,12 +14,42 @@ export const AuthContext = createContext<AuthenticationState & AuthActions>(
 
 export const WithAuthenticationContext: React.FC<{
   initialState: AuthenticationState;
-  children: any;
+  children: React.ReactNode;
 }> = ({ initialState, children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        dispatch({
+          action: Actions.Login,
+          payload: {
+            user: data.session.user,
+            session: data.session,
+          },
+        });
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    const storedState = localStorage.getItem("authState");
+    if (storedState) {
+      dispatch({
+        action: Actions.Login,
+        payload: JSON.parse(storedState),
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("authState", JSON.stringify(state));
+  }, [state]);
+
   const setUser = async (data: AuthTokenResponsePassword) => {
-  
     dispatch({ action: Actions.Login, payload: data });
   };
 
@@ -48,7 +80,7 @@ const reducer = (
 export interface AuthenticationState {
   user?: User;
   session?: Session;
-  error?: any;
+  error?: Error;
   isLoggedIn: boolean;
 }
 

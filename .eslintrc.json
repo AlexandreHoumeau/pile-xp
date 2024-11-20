@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "no-use-before-define": false
+    "no-use-before-define": 0
   }
 }
