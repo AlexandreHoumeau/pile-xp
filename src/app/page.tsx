@@ -36,7 +36,7 @@ export default function Home() {
   );
 }
 
-const COLORS = [
+export const COLORS = [
   {
     bg: "bg-[#FF1F96]",
     logo: "/pile_xp_logo_animation_white.json",
