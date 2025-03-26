@@ -1,11 +1,29 @@
 "use client";
-import { LogoAnimation } from "@/components/LogoAnimation";
 
 export const SideNav = () => {
   return (
-    <div className="border-black border-r-2 h-full items-start">
-      <div className="bg-black p-4 h-1/5">
-        <LogoAnimation logo="pile_xp_logo_animation_white.json" />
+    <div className="border-r-[1px] h-full items-start">
+      <div className="h-screen w-64 text-black flex flex-col">
+        <nav className="flex flex-col p-4 space-y-2">
+          <a
+            href="/admin"
+            className="flex items-center p-2 rounded hover:bg-slate-50"
+          >
+            Home
+          </a>
+          <a
+            href="/admin/projects"
+            className="flex items-center p-2 rounded hover:bg-slate-50"
+          >
+            Projects
+          </a>
+          <a
+            href="#"
+            className="flex items-center p-2 rounded hover:bg-slate-50"
+          >
+            About
+          </a>
+        </nav>
       </div>
     </div>
   );
