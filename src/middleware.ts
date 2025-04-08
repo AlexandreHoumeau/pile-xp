@@ -6,7 +6,7 @@ const protectedRoutes = ["/admin"];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
+  const isProtectedRoute = path.includes("admin");
 
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
