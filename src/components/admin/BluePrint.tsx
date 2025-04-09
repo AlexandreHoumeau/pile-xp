@@ -9,7 +9,7 @@ export type PhotoProps = {
   blueprint: PhotoItem;
   hoverPhoto: string | null;
   setHoverPhoto: Dispatch<SetStateAction<string | null>>;
-  handleDeletePhoto: (id: string) => void;
+  handleDeletePhoto: (id: string, type?: string) => void;
 };
 
 export const Blueprint: React.FC<PhotoProps> = ({
@@ -40,7 +40,7 @@ export const Blueprint: React.FC<PhotoProps> = ({
     >
       {isHoveringPhoto && (
         <div
-          onClick={() => handleDeletePhoto(blueprint.id)}
+          onClick={() => handleDeletePhoto(blueprint.id, "blueprint")}
           className="bg-black rounded-lg cursor-pointer p-2 absolute top-5 right-5 z-50"
         >
           <RiDeleteBinLine size={27} color="white" className="z-50" />

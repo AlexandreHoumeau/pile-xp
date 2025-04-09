@@ -1,13 +1,14 @@
 import { Blueprint } from "@/components/admin/BluePrint";
-import { PhotoItem } from "../types";
+import { Inputs, PhotoItem } from "../types";
 import { useState } from "react";
-import { MouseSensor, useSensor } from "@dnd-kit/core";
+import { UseFormRegister } from "react-hook-form";
 
 type BlueprintSectionProps = {
   selectedBluePrints: PhotoItem[];
-  register: any;
+  register: UseFormRegister<Inputs>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   bluePrintsInputRef: React.RefObject<HTMLInputElement>;
+  handleDeletePhoto: (id: string, type?: string) => void;
 };
 
 export default function BlueprintSection({
@@ -15,6 +16,7 @@ export default function BlueprintSection({
   register,
   handleFileChange,
   bluePrintsInputRef,
+  handleDeletePhoto,
 }: BlueprintSectionProps) {
   const [hoverPhoto, setHoverPhoto] = useState<string | null>(null);
 
@@ -35,7 +37,7 @@ export default function BlueprintSection({
             blueprint={blueprint}
             setHoverPhoto={setHoverPhoto}
             hoverPhoto={hoverPhoto}
-            handleDeletePhoto={(id) => console.log(id)}
+            handleDeletePhoto={handleDeletePhoto}
           />
         ))}
       </div>

@@ -15,16 +15,17 @@ import {
 } from "@dnd-kit/sortable";
 
 import { Photo } from "@/components/admin/Photo";
-import { useState } from "react";
-import { PhotoItem } from "../types";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Inputs, PhotoItem } from "../types";
+import { UseFormRegister } from "react-hook-form";
 
 type PhotoSectionProps = {
   selectedPhotos: PhotoItem[];
   handleDeletePhoto: (id: string) => void;
-  register: any;
+  register: UseFormRegister<Inputs>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   photosInputRef: React.RefObject<HTMLInputElement>;
-  setSelectedPhotos: any;
+  setSelectedPhotos: Dispatch<SetStateAction<PhotoItem[]>>;
 };
 
 export default function PhotoSection({

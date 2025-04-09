@@ -1,6 +1,9 @@
 "use client";
+import { saveDraft } from "@/app/actions/projects/add";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import BlueprintSection from "../components/BlueprintSection";
 import PhotoSection from "../components/PhotoSection";
 import ProjectDetails from "../components/ProjectDetails";
@@ -13,24 +16,31 @@ export default function AddProject() {
   const [selectedBluePrints, setSelectedBluePrints] = useState<PhotoItem[]>([]);
   const photosInputRef = useRef<HTMLInputElement>(null);
   const bluePrintsInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    getValues,
+    setValue,
+    formState: { isValid },
   } = useForm<Inputs>();
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files, name } = e.target;
+
     if (files?.length) {
-      const selectedFiles: PhotoItem[] = Array.from(files).map((photo) => ({
-        id: crypto.randomUUID(),
-        url: URL.createObjectURL(photo),
-      }));
+      const selectedFiles: PhotoItem[] = Array.from(files).map((file) => {
+        return {
+          id: crypto.randomUUID(),
+          url: URL.createObjectURL(file),
+          file,
+        };
+      });
       if (name === "photos") {
-        setSelectedPhotos([...selectedPhotos, ...selectedFiles]);
+        const newSelectedPhotos = [...selectedPhotos, ...selectedFiles];
+        setSelectedPhotos(newSelectedPhotos);
+        setValue("photos", newSelectedPhotos);
       } else {
         setSelectedBluePrints([...selectedBluePrints, ...selectedFiles]);
       }
@@ -38,17 +48,43 @@ export default function AddProject() {
   };
 
   const handleDeletePhoto = (id: string, type?: string) => {
-    if (type === "pblue")
-    setSelectedPhotos(selectedPhotos.filter((photo) => photo.id !== id));
+    if (type === "blueprint")
+      return setSelectedBluePrints(
+        selectedBluePrints.filter((bp) => bp.id !== id)
+      );
+    return setSelectedPhotos(selectedPhotos.filter((photo) => photo.id !== id));
+  };
+
+  const save = async () => {
+    try {
+      toast.promise(
+        async () => {
+          const formData = getValues();
+
+          const photosToStore = selectedPhotos.map((photo) => photo.file);
+          const blueprintsToStore = selectedBluePrints.map((bp) => bp.file);
+
+          await saveDraft(formData, photosToStore, blueprintsToStore);
+        },
+        {
+          loading: "Loading",
+          success: "Project created with success!",
+          error: (error) => error.message,
+        }
+      );
+    } catch {
+      router.push("/admin/projects/new");
+    }
   };
 
   return (
     <div className="font-insitutrial">
-      <UploadButtons
-        photosInputRef={photosInputRef}
-        bluePrintsInputRef={bluePrintsInputRef}
-      />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(save)}>
+        <UploadButtons
+          photosInputRef={photosInputRef}
+          bluePrintsInputRef={bluePrintsInputRef}
+          isValid={isValid}
+        />
         <PhotoSection
           selectedPhotos={selectedPhotos}
           setSelectedPhotos={setSelectedPhotos}
@@ -64,6 +100,7 @@ export default function AddProject() {
             register={register}
             handleFileChange={handleFileChange}
             bluePrintsInputRef={bluePrintsInputRef}
+            handleDeletePhoto={handleDeletePhoto}
           />
         </div>
       </form>
