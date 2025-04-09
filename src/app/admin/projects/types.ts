@@ -1,11 +1,12 @@
 export type PhotoItem = {
   id: string;
   url: string;
+  file: File;
 };
 
 export type Inputs = {
   title: string;
-  photos: FileList;
+  photos: PhotoItem[];
   blueprints: FileList;
   address: string;
   project_owner: string;
@@ -16,4 +17,10 @@ export type Inputs = {
   surface: string;
   budget: string;
   description: string;
+};
+
+export type ProjectCard = {
+  coverPhoto: string;
+  title: string;
+  created_at: Date;
 };
