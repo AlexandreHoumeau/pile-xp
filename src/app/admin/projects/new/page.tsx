@@ -1,4 +1,5 @@
 "use client";
+
 import { saveDraft } from "@/app/actions/projects/add";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -28,53 +29,56 @@ export default function AddProject() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files, name } = e.target;
-
     if (files?.length) {
-      const selectedFiles: PhotoItem[] = Array.from(files).map((file) => {
-        return {
-          id: crypto.randomUUID(),
-          url: URL.createObjectURL(file),
-          file,
-        };
-      });
-      if (name === "photos") {
-        const newSelectedPhotos = [...selectedPhotos, ...selectedFiles];
-        setSelectedPhotos(newSelectedPhotos);
-        setValue("photos", newSelectedPhotos);
-      } else {
-        setSelectedBluePrints([...selectedBluePrints, ...selectedFiles]);
-      }
+      const selectedFiles = mapFilesToPhotoItems(files);
+      updateSelectedFiles(name, selectedFiles);
+    }
+  };
+
+  const mapFilesToPhotoItems = (files: FileList): PhotoItem[] => {
+    return Array.from(files).map((file) => ({
+      id: crypto.randomUUID(),
+      url: URL.createObjectURL(file),
+      file,
+    }));
+  };
+
+  const updateSelectedFiles = (name: string, selectedFiles: PhotoItem[]) => {
+    if (name === "photos") {
+      const updatedPhotos = [...selectedPhotos, ...selectedFiles];
+      setSelectedPhotos(updatedPhotos);
+      setValue("photos", updatedPhotos);
+    } else {
+      setSelectedBluePrints([...selectedBluePrints, ...selectedFiles]);
     }
   };
 
   const handleDeletePhoto = (id: string, type?: string) => {
-    if (type === "blueprint")
-      return setSelectedBluePrints(
-        selectedBluePrints.filter((bp) => bp.id !== id)
-      );
-    return setSelectedPhotos(selectedPhotos.filter((photo) => photo.id !== id));
+    if (type === "blueprint") {
+      setSelectedBluePrints(selectedBluePrints.filter((bp) => bp.id !== id));
+    } else {
+      setSelectedPhotos(selectedPhotos.filter((photo) => photo.id !== id));
+    }
   };
 
   const save = async () => {
-    try {
-      toast.promise(
-        async () => {
-          const formData = getValues();
+    toast.promise(
+      async () => {
+        const formData = getValues();
+        const photosToStore = selectedPhotos.map((photo) => photo.file);
+        const blueprintsToStore = selectedBluePrints.map((bp) => bp.file);
 
-          const photosToStore = selectedPhotos.map((photo) => photo.file);
-          const blueprintsToStore = selectedBluePrints.map((bp) => bp.file);
-
-          await saveDraft(formData, photosToStore, blueprintsToStore);
+        await saveDraft(formData, photosToStore, blueprintsToStore);
+      },
+      {
+        loading: "Loading...",
+        success: () => {
+          router.push("/admin/projects");
+          return "Project created successfully!";
         },
-        {
-          loading: "Loading",
-          success: "Project created with success!",
-          error: (error) => error.message,
-        }
-      );
-    } catch {
-      router.push("/admin/projects/new");
-    }
+        error: (error) => error.message,
+      }
+    );
   };
 
   return (
