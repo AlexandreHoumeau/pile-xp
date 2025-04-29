@@ -6,7 +6,8 @@ export async function storeFiles(files: File[], folder: string) {
   for (const file of files) {
     const filePath = `${folder}/${crypto.randomUUID()}-${file.name
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")}`;
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "")}`;
 
     const { data, error } = await supabase.storage
       .from("projects")
@@ -17,7 +18,7 @@ export async function storeFiles(files: File[], folder: string) {
     }
 
     if (data) {
-      fileUrls.push(data.fullPath);
+      fileUrls.push(data.path);
     }
   }
 

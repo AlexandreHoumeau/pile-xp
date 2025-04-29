@@ -1,10 +1,13 @@
-import { ProjectCard as ProjectCardType } from "../types";
+import { Project } from "@/app/actions/projects/type";
+import Link from "next/link";
 
-export default function ProjectCard({ project }: { project: ProjectCardType }) {
+export default function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <h2 className="text-lg font-semibold text-gray-800">{project.title}</h2>
-      <p className="text-gray-600 mt-2">{project.title}</p>
-    </div>
+    <Link href={`projects/${project.id}`} className="bg-slate-200">
+      <img
+        src={project.photos[0]}
+        className=" object-cover object-center h-[337px]"
+      />
+    </Link>
   );
 }
