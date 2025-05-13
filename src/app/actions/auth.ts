@@ -31,7 +31,6 @@ export async function login(state: FormState, formData: FormData) {
   });
 
   if (error) {
-    console.log(JSON.stringify(error, null, 3))
     return { message: error.message };
   }
 
