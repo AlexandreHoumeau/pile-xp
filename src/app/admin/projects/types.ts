@@ -1,7 +1,7 @@
 export type PhotoItem = {
   id: string;
   url: string;
-  file: File;
+  file?: File | undefined;
 };
 
 export type Inputs = {
