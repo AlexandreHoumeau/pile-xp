@@ -22,7 +22,6 @@ export default function Projects() {
       blueprints: getPublicUrl(project.blueprints),
       photos: getPublicUrl(project.photos),
     }));
-    console.log(refinedData);
     setProjects(refinedData!);
   };
 
