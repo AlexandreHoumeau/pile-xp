@@ -13,6 +13,7 @@ import UploadButtons from "./UploadButtons";
 
 import { technicalData } from "../technicalData";
 import { Inputs, PhotoItem } from "../types";
+import { MAX_FILE_SIZE } from "@/utils/general";
 
 interface ProjectFormProps {
   onSubmit: (data: Inputs, photos: any[], blueprints: any[]) => Promise<void>;
@@ -49,20 +50,26 @@ export default function ProjectForm({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files, name } = e.target;
+
     if (files?.length) {
+      const isOneFileBiggerThan2mb = Array.from(files).some(
+        (file) => file.size > MAX_FILE_SIZE
+      );
+
+      if (isOneFileBiggerThan2mb)
+        return toast.error("One or more file(s) are bigger than 2mb.");
+
       const selectedFiles = mapFilesToPhotoItems(files);
       updateSelectedFiles(name, selectedFiles);
     }
   };
 
-  const mapFilesToPhotoItems = (files: FileList): PhotoItem[] => {
-    return Array.from(files).map((file) => ({
+  const mapFilesToPhotoItems = (files: FileList): PhotoItem[] =>
+    Array.from(files).map((file) => ({
       id: crypto.randomUUID(),
       url: URL.createObjectURL(file),
       file,
     }));
-  };
-
   const updateSelectedFiles = (name: string, selectedFiles: PhotoItem[]) => {
     if (name === "photos") {
       const updatedPhotos = [...selectedPhotos, ...selectedFiles];
