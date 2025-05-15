@@ -28,7 +28,7 @@ export default function Home() {
           <p className="font-insitutrial">
             Arthur Rundstadler + Charlotte Sampson
           </p>
-          <p className="font-insitutrial">projet@pile-xp.com</p>
+          <p className="font-insitutrial">contact@pile-xp.com</p>
           <h1 className="mt-10 font-insitutrial_bold">SITE EN CONSTRUCTION</h1>
         </div>
       </div>
