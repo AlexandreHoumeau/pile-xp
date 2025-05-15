@@ -17,7 +17,7 @@ export async function updateProject(
       .map((photo) => photo.file)
       .filter((file): file is File => file !== undefined);
 
-    const newBlueprints: File[] = photos
+    const newBlueprints: File[] = blueprints
       .map((photo) => photo.file)
       .filter((file): file is File => file !== undefined);
 

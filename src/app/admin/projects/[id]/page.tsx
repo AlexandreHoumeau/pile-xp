@@ -3,10 +3,12 @@
 
 import { getProjectById } from "@/app/actions/projects/get";
 import { updateProject } from "@/app/actions/projects/update";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProjectForm from "../components/ProjectForm";
 import { Inputs, PhotoItem } from "../types";
+import { deleteProjectById } from "@/app/actions/projects/delete";
+import toast from "react-hot-toast";
 
 function mapUrlsToPhotoItems(urls: string[]): PhotoItem[] {
   return urls.map((url) => ({
@@ -18,6 +20,7 @@ function mapUrlsToPhotoItems(urls: string[]): PhotoItem[] {
 
 export default function EditProjectPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [initialData, setInitialData] = useState<Inputs | null>(null);
   const [initialPhotos, setInitialPhotos] = useState<PhotoItem[]>([]);
   const [initialBlueprints, setInitialBlueprints] = useState<PhotoItem[]>([]);
@@ -42,6 +45,22 @@ export default function EditProjectPage() {
     await updateProject(formData, newPhotos, newBlueprints, id as string);
   };
 
+  const onDelete = () => {
+    toast.promise(
+      async () => {
+        await deleteProjectById(id as string);
+      },
+      {
+        loading: "Deleting..",
+        success: () => {
+          router.push("/admin/projects");
+          return "Project deleted!";
+        },
+        error: (err) => err.message || "Something went wrong.",
+      }
+    );
+  };
+
   if (!initialData) return <div>Loading...</div>;
 
   return (
@@ -51,6 +70,7 @@ export default function EditProjectPage() {
       initialPhotos={initialPhotos}
       initialBlueprints={initialBlueprints}
       isEdit
+      onDelete={onDelete}
     />
   );
 }

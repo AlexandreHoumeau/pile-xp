@@ -14,6 +14,8 @@ import UploadButtons from "./UploadButtons";
 import { technicalData } from "../technicalData";
 import { Inputs, PhotoItem } from "../types";
 import { MAX_FILE_SIZE } from "@/utils/general";
+import Modal from "@/components/Modal";
+import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 
 interface ProjectFormProps {
   onSubmit: (data: Inputs, photos: any[], blueprints: any[]) => Promise<void>;
@@ -21,6 +23,7 @@ interface ProjectFormProps {
   initialPhotos?: PhotoItem[];
   initialBlueprints?: PhotoItem[];
   isEdit?: boolean;
+  onDelete?: () => void;
 }
 
 export default function ProjectForm({
@@ -29,7 +32,9 @@ export default function ProjectForm({
   initialPhotos = [],
   initialBlueprints = [],
   isEdit = false,
+  onDelete,
 }: ProjectFormProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedPhotos, setSelectedPhotos] =
     useState<PhotoItem[]>(initialPhotos);
   const [selectedBluePrints, setSelectedBluePrints] =
@@ -70,6 +75,7 @@ export default function ProjectForm({
       url: URL.createObjectURL(file),
       file,
     }));
+  
   const updateSelectedFiles = (name: string, selectedFiles: PhotoItem[]) => {
     if (name === "photos") {
       const updatedPhotos = [...selectedPhotos, ...selectedFiles];
@@ -107,30 +113,55 @@ export default function ProjectForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="font-insitutrial">
-      <UploadButtons
-        photosInputRef={photosInputRef}
-        bluePrintsInputRef={bluePrintsInputRef}
-        isValid={isValid}
-      />
-      <PhotoSection
-        selectedPhotos={selectedPhotos}
-        setSelectedPhotos={setSelectedPhotos}
-        handleDeletePhoto={handleDeletePhoto}
-        register={register}
-        handleFileChange={handleFileChange}
-        photosInputRef={photosInputRef}
-      />
-      <div className="grid grid-cols-2">
-        <ProjectDetails register={register} technicalData={technicalData} />
-        <BlueprintSection
-          selectedBluePrints={selectedBluePrints}
+    <>
+      <form onSubmit={handleSubmit(onSave)} className="font-insitutrial">
+        <UploadButtons
+          photosInputRef={photosInputRef}
+          bluePrintsInputRef={bluePrintsInputRef}
+          isValid={isValid}
+          isEdit={isEdit}
+          onDelete={() => setIsOpen(true)}
+        />
+        <PhotoSection
+          selectedPhotos={selectedPhotos}
+          setSelectedPhotos={setSelectedPhotos}
+          handleDeletePhoto={handleDeletePhoto}
           register={register}
           handleFileChange={handleFileChange}
-          bluePrintsInputRef={bluePrintsInputRef}
-          handleDeletePhoto={handleDeletePhoto}
+          photosInputRef={photosInputRef}
         />
-      </div>
-    </form>
+        <div className="grid grid-cols-2">
+          <ProjectDetails register={register} technicalData={technicalData} />
+          <BlueprintSection
+            selectedBluePrints={selectedBluePrints}
+            register={register}
+            handleFileChange={handleFileChange}
+            bluePrintsInputRef={bluePrintsInputRef}
+            handleDeletePhoto={handleDeletePhoto}
+          />
+        </div>
+      </form>
+
+      <Modal isOpen={isOpen && isEdit} onClose={() => setIsOpen(false)}>
+        <h2 className="text-xl font-insitutrial_bold mb-2">
+          Êtes vous sur de vouloir supprimer ce projet ?
+        </h2>
+        <p className="text-center italic font-insitutrial mb-2">
+          Attention cette action est irréversible.
+        </p>
+        <div className="flex mt-4 justify-between">
+          <AdminIconButton
+            label="Annuler"
+            onClick={() => setIsOpen(false)}
+            className="text-center min-h-max rounded-lg border hover:bg-gray-100"
+          />
+          <AdminIconButton
+            label="Supprimer"
+            onClick={onDelete}
+            className="text-red-500 text-center min-h-max rounded-lg hover:bg-red-200 bg-red-100 border border-red-200"
+          />
+        </div>
+      </Modal>
+    </>
   );
 }
