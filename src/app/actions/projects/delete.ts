@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/supabaseClient";
-import { deleteFiles } from "./files";
+import { deleteFiles } from "../files";
 
 export async function deleteProjectById(id: string) {
   try {

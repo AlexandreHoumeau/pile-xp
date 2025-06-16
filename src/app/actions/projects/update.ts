@@ -1,6 +1,6 @@
 import { Inputs, PhotoItem } from "@/app/admin/projects/types";
-import { storeFiles, deleteFiles, URL_SUFFIX, getFullPathPhoto } from "./files";
 import { supabase } from "@/utils/supabaseClient";
+import { deleteFiles, getFullPathPhoto, storeFiles } from "../files";
 import { getProjectById } from "./get";
 
 export async function updateProject(
@@ -56,8 +56,8 @@ export async function updateProject(
       (url) => !newBlueprintUrls.includes(url)
     );
 
-    await deleteFiles(deletedPhotoUrls, "photos");
-    await deleteFiles(deletedBlueprintUrls, "blueprints");
+    await deleteFiles(deletedPhotoUrls);
+    await deleteFiles(deletedBlueprintUrls);
 
     const projectData = {
       ...formData,

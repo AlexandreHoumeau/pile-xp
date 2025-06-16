@@ -14,7 +14,7 @@ export async function storeFiles(files: File[], folder: string) {
       .from("projects")
       .upload(filePath, file);
 
-    if (error) {
+      if (error) {
       throw error;
     }
 
@@ -26,7 +26,7 @@ export async function storeFiles(files: File[], folder: string) {
   return fileUrls;
 }
 
-export async function deleteFiles(fileUrls: string[], folder: string) {
+export async function deleteFiles(fileUrls: string[]) {
   for (const fileUrl of fileUrls) {
     const { error } = await supabase.storage
       .from("projects")

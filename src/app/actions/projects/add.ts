@@ -1,6 +1,6 @@
 import { Inputs } from "@/app/admin/projects/types";
 import { supabase } from "@/utils/supabaseClient";
-import { storeFiles } from "./files";
+import { storeFiles } from "../files";
 
 export async function saveDraft(
   formData: Inputs,
