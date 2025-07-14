@@ -1,144 +1,82 @@
-import { Area } from "react-easy-crop";
-
-// utils/cropImage.ts
-// export default function getCroppedImg(
-//   imageSrc: string,
-//   pixelCrop: any
-// ): Promise<Blob> {
-//   return new Promise(async (resolve) => {
-//     const image = await createImage(imageSrc);
-
-//     const height = pixelCrop.height > 0 ? pixelCrop.height : image.height;
-//     const width = pixelCrop.width > 0 ? pixelCrop.width : image.width;
-//     console.log(height);
-//     console.log(width);
-//     console.log(pixelCrop);
-
-//     image.onload = () => {
-//       const canvas = document.createElement("canvas");
-//       canvas.width = pixelCrop.width;
-//       canvas.height = pixelCrop.height;
-//       const ctx = canvas.getContext("2d")!;
-//       ctx.drawImage(
-//         image,
-//         pixelCrop.x,
-//         pixelCrop.y,
-//         width,
-//         height,
-//         0,
-//         0,
-//         width,
-//         height
-//       );
-//       canvas.toBlob((blob) => resolve(blob!), "image/jpeg");
-//     };
-//   });
-// }
-
-export default async function getCroppedImg(
-  imageSrc: string,
-  pixelCrop: Area
-): Promise<Blob> {
-  const image = await createImage(imageSrc);
-  console.log(pixelCrop)
-  const width = pixelCrop.width > 0 ? pixelCrop.width : image.width;
-  const height = pixelCrop.height > 0 ? pixelCrop.height : image.height;
-
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-
-  const ctx = canvas.getContext("2d")!;
-  ctx.drawImage(
-    image,
-    pixelCrop.x,
-    pixelCrop.y,
-    width,
-    height,
-    0,
-    0,
-    width,
-    height
-  );
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob);
-      else reject(new Error("Canvas toBlob failed"));
-    }, "image/jpeg");
-  });
-}
+import type { Area } from "react-easy-crop";
 
 export const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
-    const image = new Image();
-    image.addEventListener("load", () => resolve(image));
-    image.addEventListener("error", (error) => reject(error));
-    image.setAttribute("crossOrigin", "anonymous");
-    image.src = url;
-  });
+    const image = new Image()
+    image.addEventListener('load', () => resolve(image))
+    image.addEventListener('error', (error) => reject(error))
+    image.setAttribute('crossOrigin', 'anonymous') // needed to avoid cross-origin issues on CodeSandbox
+    image.src = url
+  })
 
-export function getRadianAngle(degreeValue: any) {
-  return (degreeValue * Math.PI) / 180;
+export function getRadianAngle(degreeValue: number) {
+  return (degreeValue * Math.PI) / 180
 }
 
-export function rotateSize(width: any, height: any, rotation: any) {
-  const rotRad = getRadianAngle(rotation);
+/**
+ * Returns the new bounding area of a rotated rectangle.
+ */
+export function rotateSize(width: number, height: number, rotation: number) {
+  const rotRad = getRadianAngle(rotation)
 
   return {
     width:
       Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
     height:
       Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
-  };
+  }
 }
 
-export async function getCroppedImage(
+/**
+ * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
+ */
+export default async function getCroppedImg(
   imageSrc: string,
   pixelCrop: Area,
   rotation = 0,
   flip = { horizontal: false, vertical: false }
-): Promise<string | null> {
-  const image = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+): Promise<{url: string, blob: Blob} | null> {
+  const image = await createImage(imageSrc)
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
 
   if (!ctx) {
-    return null;
+    return null
   }
 
-  // // calculate bounding box of the rotated image
-  // const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
-  //   image.width,
-  //   image.height,
-  //   0
-  // );
+  const rotRad = getRadianAngle(rotation)
+
+  // calculate bounding box of the rotated image
+  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
+    image.width,
+    image.height,
+    rotation
+  )
 
   // set canvas size to match the bounding box
-  canvas.width = image.width;
-  canvas.height = image.height;
+  canvas.width = bBoxWidth
+  canvas.height = bBoxHeight
 
-  console.log(canvas);
   // translate canvas context to a central location to allow rotating and flipping around the center
-  // ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
-  // ctx.rotate(rotRad);
-  // ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1);
-  // ctx.translate(-image.width / 2, -image.height / 2);
+  ctx.translate(bBoxWidth / 2, bBoxHeight / 2)
+  ctx.rotate(rotRad)
+  ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1)
+  ctx.translate(-image.width / 2, -image.height / 2)
 
   // draw rotated image
-  ctx.drawImage(image, 0, 0);
+  ctx.drawImage(image, 0, 0)
 
-  const croppedCanvas = document.createElement("canvas");
+  const croppedCanvas = document.createElement('canvas')
 
-  const croppedCtx = croppedCanvas.getContext("2d");
+  const croppedCtx = croppedCanvas.getContext('2d')
 
   if (!croppedCtx) {
-    return null;
+    return null
   }
 
   // Set the size of the cropped canvas
-  croppedCanvas.width = pixelCrop.width;
-  croppedCanvas.height = pixelCrop.height;
+  croppedCanvas.width = pixelCrop.width
+  croppedCanvas.height = pixelCrop.height
 
   // Draw the cropped image onto the new canvas
   croppedCtx.drawImage(
@@ -151,7 +89,7 @@ export async function getCroppedImage(
     0,
     pixelCrop.width,
     pixelCrop.height
-  );
+  )
 
   // As Base64 string
   // return croppedCanvas.toDataURL('image/jpeg');
@@ -159,9 +97,7 @@ export async function getCroppedImage(
   // As a blob
   return new Promise((resolve, reject) => {
     croppedCanvas.toBlob((file) => {
-      console.log(file);
-      console.log(URL.createObjectURL(file!));
-      resolve(URL.createObjectURL(file!));
-    }, "image/jpeg");
-  });
+      resolve({ url: URL.createObjectURL(file!), blob: file! })
+    }, 'image/jpeg')
+  })
 }

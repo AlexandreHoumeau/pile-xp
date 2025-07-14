@@ -28,7 +28,7 @@ export default function PhotoCropper({
 
   const handleCrop = async () => {
     const croppedBlob = await getCroppedImg(imageUrl, croppedAreaPixels);
-    onCropDone(croppedBlob);
+    onCropDone(croppedBlob?.blob!);
   };
 
   return (
