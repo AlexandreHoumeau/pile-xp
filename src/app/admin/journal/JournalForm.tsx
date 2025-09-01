@@ -91,6 +91,7 @@ export function JournalForm({
       <input {...register("title", { required: true })} placeholder="Titre" />
       <textarea {...register("description")} placeholder="Description" />
       <input type="date" {...register("date", { required: true })} />
+      <input type="url" {...register("url", { required: true })} placeholder="Link" />
 
       <button type="submit" className="bg-pink text-white py-2" disabled={!isValid || isSubmitting}>
         {isSubmitting ? "Enregistrement..." : "Sauvegarder"}

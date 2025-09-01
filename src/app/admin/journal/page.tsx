@@ -1,28 +1,35 @@
 "use client";
 
+import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import type { Area } from "react-easy-crop";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-import { addJournal } from "@/app/actions/journal /add";
-import { deleteJournalEntryById } from "@/app/actions/journal /delete";
-import { listJournals } from "@/app/actions/journal /list";
-import { updateJournalEntryById } from "@/app/actions/journal /update";
+import { addJournal } from "@/app/actions/journal/add";
+import { deleteJournalEntryById } from "@/app/actions/journal/delete";
+import { listJournals } from "@/app/actions/journal/list";
+import { updateJournalEntryById } from "@/app/actions/journal/update";
+import SkeletonCard from "@/components/loaders/SkeletonCard";
 import getCroppedImg from "@/utils/cropImage";
 import { MAX_FILE_SIZE } from "@/utils/general";
 import { JournalForm } from "./JournalForm";
-import SkeletonCard from "@/components/loaders/SkeletonCard";
 
 type Inputs = {
   title: string;
   photo: File | string;
   date: Date;
+  url?: string;
   description: string;
 };
 
+interface Journal extends Inputs {
+  id: string;
+  photo: string;
+}
+
 export default function Journal() {
-  const [journals, setJournals] = useState<any[]>([]);
+  const [journals, setJournals] = useState<Journal[]>([]);
   const [editJournalId, setEditJournalId] = useState<string | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [cropMode, setCropMode] = useState(false);
@@ -89,7 +96,7 @@ export default function Journal() {
     }
   };
 
-  const submitForm = async (data: Inputs) => {
+  const submitForm = async () => {
     if (!imageSrc) return toast.error("No image selected");
     setIsSubmitting(true);
     try {
@@ -128,7 +135,7 @@ export default function Journal() {
     reset();
   };
 
-  const handleEdit = (journal: any) => {
+  const handleEdit = (journal: Journal) => {
     const img = new Image();
     img.onload = () => {
       setCroppedAreaPixels({ width: img.width, height: img.height, x: 0, y: 0 });
@@ -139,6 +146,7 @@ export default function Journal() {
     setIsAddingNew(false);
     setValue("title", journal.title);
     setValue("description", journal.description);
+    setValue("url", journal.url);
     setValue("date", journal.date);
     setValue("photo", journal.photo);
     setImageSrc(journal.photo);
@@ -181,12 +189,13 @@ export default function Journal() {
             ) : (
               <div className="min-h-[481px]" key={journal.id}>
                 <img src={journal.photo} className="object-cover object-center w-full" />
-                <div className="flex font-insitutrial_bold space-x-2">
-                  <p>{journal.date}</p>
-                  <p>{journal.title}</p>
+                <div className="flex font-insitutrial_bold text-xl space-x-2">
+                  <h1>{dayjs(journal.date).format("DD - MM - YYYY")}</h1>
+                  <h1>{journal.title}</h1>
                 </div>
                 <p>{journal.description}</p>
-                <div className="flex gap-2 mt-2 font-insitutrial_bold">
+                {journal.url && <a className="font-insitutrial_bold underline" href={journal.url} target="_blank">En savoir plus</a>}
+                <div className="flex gap-2 mt-2">
                   <button className="text-green" onClick={() => handleEdit(journal)}>
                     Modifier
                   </button>
