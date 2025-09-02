@@ -1,4 +1,6 @@
+"use client"
 import React from "react";
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface TextareaComponentProps {
   label: string;
@@ -20,7 +22,7 @@ const TextareaComponent: React.FC<TextareaComponentProps> = ({
           <span className="text-green font-insitutrial_bold"> *</span>
         )}
       </div>
-      <textarea
+      <TextareaAutosize 
         className="w-full border-none focus:outline-none p-2 pt-4 resize-none h-24"
         placeholder={placeholder}
         {...props}
