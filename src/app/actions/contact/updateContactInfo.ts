@@ -1,33 +1,42 @@
 import { supabase } from "@/utils/supabaseClient"
 import { ContactInfo } from "./getContactInfo"
 import { updateFAQ } from "./updateFAQ"
+import { deleteFiles, storeFiles } from "../files";
 
-export const updateContactInfo = async (contact_info: ContactInfo): Promise<void> => {
-	try {
-		const { faq, ...contactInfoData } = contact_info
+export const updateContactInfo = async (
+  contact_info: ContactInfo,
+  newPhoto?: File | null
+): Promise<void> => {
+  try {
+    let photoUrl = contact_info.photo_url;
 
-		if (contact_info.faq) {
-			await updateFAQ(contact_info.faq)
-		}
+    // if a new photo was selected
+    if (newPhoto) {
+      // remove old photo
+      if (photoUrl) {
+        const oldPath = photoUrl.split("/").pop();
+        if (oldPath) {
+					await deleteFiles([oldPath])
+        }
+      }
 
-		const { error: deleteError } = await supabase
-			.from("contact_info")
-			.delete()
-			.neq("id", 0)
+      const newPhotoUrl = await storeFiles([newPhoto], "contact_photo")
+			photoUrl = newPhotoUrl[0]
+    }
 
-		if (deleteError) {
-			throw new Error(`Failed to clear contact_info: ${deleteError.message}`)
-		}
+    // remove `faq` before insert
+    const { faq, ...contactInfoWithoutFaq } = contact_info;
 
-		const { error: insertError } = await supabase
-			.from("contact_info")
-			.insert(contactInfoData)
+    await supabase.from("contact_info").delete().neq("id", 0);
+    await updateFAQ(faq);
 
-		if (insertError) {
-			throw new Error(`Failed to insert contact_info: ${insertError.message}`)
-		}
-	} catch (err: any) {
-		console.error("updateContactInfo error:", err)
-		throw err // let the frontend catch and display
-	}
+    const { error } = await supabase
+      .from("contact_info")
+      .insert({ ...contactInfoWithoutFaq, photo_url: photoUrl });
+
+    if (error) throw error;
+  } catch (error: any) {
+    console.error(error);
+    throw Error(error.message || "Failed to update contact info");
+  }
 }
