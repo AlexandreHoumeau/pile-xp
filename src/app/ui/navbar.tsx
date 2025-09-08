@@ -20,7 +20,6 @@ export default function Navbar() {
 	);
 	const [activeIndex, setActiveIndex] = useState(0);
 
-	// measure link positions
 	useEffect(() => {
 		if (containerRef.current) {
 			const children = Array.from(containerRef.current.children) as HTMLElement[];
@@ -28,14 +27,9 @@ export default function Navbar() {
 				left: child.offsetLeft,
 				width: child.offsetWidth,
 			}));
-			console.log(newPositions)
 			setPositions(newPositions);
 		}
 	}, [pathName]);
-
-	useEffect(() => {
-		console.log(positions[activeIndex])
-	}, [activeIndex])
 
 	return (
 		<div className="font-insitutrial relative h-16">
@@ -57,14 +51,12 @@ export default function Navbar() {
 							</Link>
 						))}
 					</div>
-					{/* Moving Logo */}
 					{positions.length > 0 && (
 						<div
 							className="absolute bg-pink transition-all p-4 duration-300"
 							style={{
-								top: "100%", // place below navbar
+								top: "100%",
 								left: positions[activeIndex]?.left - 64,
-								// width: positions[activeIndex]?.width,
 							}}
 						>
 							<div className="flex justify-center">

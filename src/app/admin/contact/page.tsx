@@ -6,11 +6,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { FaRegSave } from "react-icons/fa";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Image from "next/image";
+import { FaRegSave } from "react-icons/fa";
 
 import { getContactInfo } from "@/app/actions/contact/getContactInfo";
 import { updateContactInfo } from "@/app/actions/contact/updateContactInfo";
@@ -52,12 +51,13 @@ export default function ContactPage() {
   });
 
   const [newPhoto, setNewPhoto] = useState<File | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const loadContactInfo = async () => {
       const data = await getContactInfo();
       if (!data) return;
-			console.log(data.photo_url)
+
       reset({
         description: data.description,
         email: data.email,
@@ -213,58 +213,62 @@ export default function ContactPage() {
             />
           </div>
         </div>
-
-        {/* RIGHT FIXED PHOTO PANEL */}
-        <div className="w-full sticky top-10 h-fit border p-4 bg-white shadow-sm">
-          <h2 className="font-insitutrial_bold text-xl mb-4">Photo</h2>
-
+        <div className="w-full">
           <Controller
             name="photo_url"
             control={control}
             render={({ field }) => (
               <div className="space-y-4">
-                {newPhoto ? (
-                  <Image
-                    src={URL.createObjectURL(newPhoto)}
-                    alt="preview"
-                    width={300}
-                    height={200}
-                    className="object-cover rounded-lg"
-                  />
-                ) : field.value ? (
-                  <Image
-                    src={field.value}
-                    alt="photo"
-                    width={300}
-                    height={200}
-                    className="object-cover rounded-lg"
-                  />
-                ) : (
-                  <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg">
-                    <span>Aucune photo</span>
-                  </div>
-                )}
+                <div className="flex h-auto flex-1 justify-center">
+                  {newPhoto ? (
+                    <img
+                      className="h-[700] w-[700] object-cover"
+                      src={URL.createObjectURL(newPhoto)}
+                      alt="Preview"
+                    />
+                  ) : field.value ? (
+                    <img
+                      className="h-[700] w-[700] object-cover"
+                      src={field.value}
+                      alt="Preview"
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg">
+                      <span>Aucune photo</span>
+                    </div>
+                  )}
+                </div>
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setNewPhoto(e.target.files[0]);
-                    }
-                  }}
-                />
-                {field.value && (
+                <div className="flex justify-center space-x-4">
                   <AdminIconButton
                     type="button"
-                    label="Supprimer la photo"
-                    onClick={() => {
-                      setValue("photo_url", "");
-                      setNewPhoto(null);
-                    }}
-                    className="rounded-lg border-pink text-pink border"
+                    label={field.value ? "Modifier la photo " : "Ajouter une photo"}
+                    onClick={() => photoInputRef.current?.click()}
+                    className="text-center border border-black min-h-max rounded-lg"
                   />
-                )}
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setNewPhoto(e.target.files[0]);
+                      }
+                    }}
+                  />
+                  {field.value && (
+                    <AdminIconButton
+                      type="button"
+                      label="Supprimer la photo"
+                      onClick={() => {
+                        setValue("photo_url", "");
+                        setNewPhoto(null);
+                      }}
+                      className="text-center min-h-max rounded-lg border-pink text-pink border"
+                    />
+                  )}
+                </div>
               </div>
             )}
           />
