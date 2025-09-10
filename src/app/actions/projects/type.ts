@@ -1,5 +1,6 @@
 export type Project = {
     address: string;
+    slug: string;
     blueprints: string[];
     budget: string;
     created_at: string;
