@@ -182,14 +182,14 @@ export default function Journal() {
           {Array.apply(null, Array(12)).map(() => <SkeletonCard />)}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-8">
           {journals.map((journal) =>
             journal.id === editJournalId ? (
               renderForm()
             ) : (
               <div className="min-h-[481px]" key={journal.id}>
                 <img src={journal.photo} className="object-cover object-center w-full" />
-                <div className="flex font-insitutrial_bold text-xl space-x-2">
+                <div className="flex font-insitutrial_bold text-xl mt-4 space-x-2">
                   <h1>{dayjs(journal.date).format("DD - MM - YYYY")}</h1>
                   <h1>{journal.title}</h1>
                 </div>

@@ -15,3 +15,10 @@ export const listProjects = async (): Promise<Project[] | null> => {
 
   return data;
 };
+
+
+export const listProjectsBySlug = async (): Promise<string[] | []> => {
+  const { data } = await supabase.from("projects").select("slug");
+
+  return data?.map(data => data.slug) || [];
+};

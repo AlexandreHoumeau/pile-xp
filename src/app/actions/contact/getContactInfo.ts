@@ -16,7 +16,7 @@ export const getContactInfo = async (): Promise<ContactInfo | null> => {
 
 	const faq = await listFAQ()
 
-	const { data, error } = await supabase.from("contact_info").select().single()
+	const { data } = await supabase.from("contact_info").select().single()
 
 
 	return {

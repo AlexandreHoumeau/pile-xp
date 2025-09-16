@@ -27,8 +27,7 @@ const Home: React.FC = () => {
 				{projects.map((project) => (
 					<a
 						key={project.id}
-						href={`/projects/${project.slug}`}
-						// className="bg-white rounded-lg shadow hover:shadow-lg transition flex flex-col items-center p-4"
+						href={`/home/projects/${project.slug}`}
 					>
 						{project.photos && project.photos.length > 0 ? (
 							<img

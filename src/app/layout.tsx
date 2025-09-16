@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
+import Footer from "./ui/footer";
+import Navbar from "./ui/navbar";
 
 const insitutrialRegular = localFont({
   src: "./fonts/for-insitutrial-regular.otf",
@@ -24,18 +26,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log(children)
+
   return (
     <html lang="en">
       <body
-        className={`${insitutrialRegular.variable} ${insitutrialBold.variable} antialiased`}
+        className={`${insitutrialRegular.variable} ${insitutrialBold.variable} antialiased flex flex-col justify-between`}
       >
+        <Navbar />
         <WithAuthenticationContext
           initialState={{
             isLoggedIn: false,
           }}
         >
-          {children}
+          <main className="mb-auto min-h-screen">
+            {children}
+          </main>
         </WithAuthenticationContext>
+        <Footer />
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-// components/admin/PhotoCropper.tsx
 "use client";
 import Cropper from "react-easy-crop";
 import { useCallback, useState } from "react";
@@ -14,7 +13,7 @@ export default function PhotoCropper({
   const [zoom, setZoom] = useState(1);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useState(() => {
     const reader = new FileReader();
