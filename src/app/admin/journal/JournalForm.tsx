@@ -21,14 +21,15 @@ export function JournalForm({
   isValid,
   resetForm,
 }: any) {
+  console.log(cropMode)
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-2 border border-pink p-2 min-h-[481px]"
+      className="min-h-[481px]"
     >
-      <div className="relative w-full h-[310px] bg-slate-200">
+      <div className="relative w-full min-h-[481px] bg-red-200">
         {imageSrc && cropMode ? (
-          <div className="h-[310px]">
+          <div className="w-full flex-1 relative">
             <Cropper
               objectFit="vertical-cover"
               image={imageSrc}
@@ -53,7 +54,7 @@ export function JournalForm({
           </div>
         ) : imageSrc ? (
           <>
-            <img src={imageSrc} className="h-[310px] w-full object-cover" />
+            <img src={imageSrc} className="object-cover object-center w-full" />
             <button
               type="button"
               onClick={() => {
@@ -87,24 +88,26 @@ export function JournalForm({
           {imageSrc ? "Changer la photo" : "Ajouter une photo"}
         </button>
       </div>
+      <div className="flex flex-col space-y-4 mt-4">
 
-      <input {...register("title", { required: true })} placeholder="Titre" />
-      <textarea {...register("description")} placeholder="Description" />
-      <input type="date" {...register("date", { required: true })} />
-      <input type="url" {...register("url", { required: true })} placeholder="Link" />
+        <input {...register("title", { required: true })} placeholder="Titre" />
+        <textarea {...register("description")} placeholder="Description" />
+        <input type="date" {...register("date", { required: true })} />
+        <input type="url" {...register("url", { required: false })} placeholder="Link" />
 
-      <button type="submit" className="bg-pink text-white py-2" disabled={!isValid || isSubmitting}>
-        {isSubmitting ? "Enregistrement..." : "Sauvegarder"}
-      </button>
+        <button type="submit" className="bg-pink text-white py-2" disabled={!isValid || isSubmitting}>
+          {isSubmitting ? "Enregistrement..." : "Sauvegarder"}
+        </button>
 
-      <button
-        type="button"
-        className="border-pink border text-pink py-2"
-        onClick={resetForm}
-        disabled={isSubmitting}
-      >
-        Annuler
-      </button>
+        <button
+          type="button"
+          className="border-pink border text-pink py-2"
+          onClick={resetForm}
+          disabled={isSubmitting}
+        >
+          Annuler
+        </button>
+      </div>
     </form>
   );
 }

@@ -25,7 +25,7 @@ type Inputs = {
 
 interface Journal extends Inputs {
   id: string;
-  photo: string;
+  photo: string | File;
 }
 
 export default function Journal() {
@@ -140,7 +140,7 @@ export default function Journal() {
     img.onload = () => {
       setCroppedAreaPixels({ width: img.width, height: img.height, x: 0, y: 0 });
     };
-    img.src = journal.photo;
+    img.src = journal.photo as string;
 
     setEditJournalId(journal.id);
     setIsAddingNew(false);
@@ -149,7 +149,7 @@ export default function Journal() {
     setValue("url", journal.url);
     setValue("date", journal.date);
     setValue("photo", journal.photo);
-    setImageSrc(journal.photo);
+    setImageSrc(journal.photo as string);
   };
 
   const renderForm = () => (
@@ -178,17 +178,17 @@ export default function Journal() {
   return (
     <div className="min-h-full font-insitutrial">
       {isLoadingList ? (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
           {Array.apply(null, Array(12)).map(() => <SkeletonCard />)}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-8">
+			<div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
           {journals.map((journal) =>
             journal.id === editJournalId ? (
               renderForm()
             ) : (
               <div className="min-h-[481px]" key={journal.id}>
-                <img src={journal.photo} className="object-cover object-center w-full" />
+                <img src={journal.photo as string} className="object-cover object-center w-full" />
                 <div className="flex font-insitutrial_bold text-xl mt-4 space-x-2">
                   <h1>{dayjs(journal.date).format("DD - MM - YYYY")}</h1>
                   <h1>{journal.title}</h1>
