@@ -21,7 +21,6 @@ export const getContactInfo = async (): Promise<ContactInfo | null> => {
 
 	return {
 		...data,
-		photo_url: getPublicUrl([data.photo_url])[0],
 		faq: faq ?? []
 	}
 }

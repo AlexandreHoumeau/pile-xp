@@ -5,46 +5,49 @@ import { Project } from "../actions/projects/type";
 import { getPublicUrl } from "../actions/files";
 
 const Home: React.FC = () => {
-	const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const projectList = await listProjects()
+  useEffect(() => {
+    const fetchData = async () => {
+      const projectList = await listProjects();
+      const refinedData = projectList?.map((project) => ({
+        ...project,
+        photos: getPublicUrl(project.photos),
+      }));
+      setProjects(refinedData || []);
+    };
 
-			const refinedData = projectList?.map((project) => ({
-				...project,
-				photos: getPublicUrl(project.photos),
-			}));
-			setProjects(refinedData!);
-		};
+    fetchData();
+  }, []);
 
-		fetchData();
-	}, []);
-
-	return (
-		<main className="p-8">
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{projects.map((project) => (
-					<a
-						key={project.id}
-						href={`/home/projects/${project.slug}`}
-					>
-						{project.photos && project.photos.length > 0 ? (
-							<img
-								src={project.photos[0]}
-								alt={project.title}
-								className="w-[320px] h-[320px] object-cover mb-4"
-							/>
-						) : (
-							<div className="w-[300px] h-[300px] bg-gray-200 flex items-center justify-center rounded mb-4 text-gray-500">
-								No photo
-							</div>
-						)}
-					</a>
-				))}
-			</div>
-		</main>
-	);
+  return (
+    <main className="p-8">
+      {/* 1 column on small screens, 4 columns from md up */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        {projects.map((project) => (
+          <a
+            key={project.id}
+            href={`/home/projects/${project.slug}`}
+            className="transition-transform duration-300 hover:scale-105"
+          >
+            {project.photos && project.photos.length > 0 ? (
+              <div className="aspect-square w-full overflow-hidden">
+                <img
+                  src={project.photos[0]}
+                  alt={project.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="aspect-square w-full bg-gray-200 flex items-center justify-center rounded text-gray-500">
+                No photo
+              </div>
+            )}
+          </a>
+        ))}
+      </div>
+    </main>
+  );
 };
 
 export default Home;

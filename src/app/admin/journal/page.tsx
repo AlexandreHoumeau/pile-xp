@@ -152,7 +152,7 @@ export default function Journal() {
     setImageSrc(journal.photo as string);
   };
 
-  const renderForm = () => (
+  const renderForm = () => 
     <JournalForm
       imageSrc={imageSrc}
       crop={crop}
@@ -173,7 +173,7 @@ export default function Journal() {
       isValid={isValid}
       resetForm={resetFormState}
     />
-  );
+  ;
 
   return (
     <div className="min-h-full font-insitutrial">
