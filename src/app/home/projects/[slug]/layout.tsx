@@ -28,11 +28,11 @@ export default function ProjectLayout({
 	const suivantSlug = currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : slugs[0];
 
 	const goToPrecedent = () => {
-		window.location.href = `/projects/${precedentSlug}`;
+		window.location.href = `/home/projects/${precedentSlug}`;
 	}
 
 	const goToSuivant = () => {
-		window.location.href = `/projects/${suivantSlug}`;
+		window.location.href = `/home/projects/${suivantSlug}`;
 	}
 
 	return (
