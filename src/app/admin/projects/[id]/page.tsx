@@ -9,6 +9,7 @@ import ProjectForm from "../components/ProjectForm";
 import { Inputs, PhotoItem } from "../types";
 import { deleteProjectById } from "@/app/actions/projects/delete";
 import toast from "react-hot-toast";
+import { Project } from "@/app/actions/projects/type";
 
 function mapUrlsToPhotoItems(urls: string[]): PhotoItem[] {
   return urls.map((url) => ({
@@ -30,7 +31,7 @@ export default function EditProjectPage() {
       const data = await getProjectById(id as string);
 
       if (!data) return;
-      setInitialData(data as any);
+      setInitialData(projectToInputs(data));
       setInitialPhotos(mapUrlsToPhotoItems(data.photos));
       setInitialBlueprints(mapUrlsToPhotoItems(data.blueprints));
     };
@@ -74,3 +75,22 @@ export default function EditProjectPage() {
     />
   );
 }
+
+
+const projectToInputs = (project: Project): Inputs => ({
+  title: project.title,
+  photos: project.photos.map((url, index) => ({
+    id: `photo-${index}`,
+    url,
+  })),
+  blueprints: new DataTransfer().files,
+  address: project.address,
+  project_owner: project.project_owner,
+  project_management: project.project_management,
+  program: project.program,
+  status: project.status,
+  delivery: project.delivery,
+  surface: project.surface,
+  budget: project.budget,
+  description: project.description,
+});

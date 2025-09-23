@@ -15,7 +15,7 @@ import getCroppedImg from "@/utils/cropImage";
 import { MAX_FILE_SIZE } from "@/utils/general";
 import { JournalForm } from "./JournalForm";
 
-type Inputs = {
+export type JournalInputs = {
   title: string;
   photo: File | string;
   date: Date;
@@ -23,7 +23,7 @@ type Inputs = {
   description: string;
 };
 
-interface Journal extends Inputs {
+interface Journal extends JournalInputs {
   id: string;
   photo: string | File;
 }
@@ -49,7 +49,7 @@ export default function Journal() {
     getValues,
     reset,
     formState: { isValid },
-  } = useForm<Inputs>();
+  } = useForm<JournalInputs>();
 
   const getJournals = async () => {
     setIsLoadingList(true);
@@ -106,7 +106,9 @@ export default function Journal() {
         y: 0,
       });
 
-      const file = new File([croppedBlob?.blob!], `${Date.now()}.jpg`, { type: "image/jpeg" });
+      if (!croppedBlob) throw new Error("No cropped image available");
+
+      const file = new File([croppedBlob.blob], `${Date.now()}.jpg`, { type: "image/jpeg" });
 
       const payload = { ...getValues(), photo: file };
 
@@ -120,8 +122,11 @@ export default function Journal() {
 
       getJournals();
       resetFormState();
-    } catch (error: any) {
-      toast.error(error.message || "Une erreur est survenue");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+      toast.error("Une erreur est survenue");
     } finally {
       setIsSubmitting(false);
     }
@@ -152,7 +157,7 @@ export default function Journal() {
     setImageSrc(journal.photo as string);
   };
 
-  const renderForm = () => 
+  const renderForm = () =>
     <JournalForm
       imageSrc={imageSrc}
       crop={crop}
@@ -173,22 +178,22 @@ export default function Journal() {
       isValid={isValid}
       resetForm={resetFormState}
     />
-  ;
+    ;
 
   return (
     <div className="min-h-full font-insitutrial">
       {isLoadingList ? (
         <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
-          {Array.apply(null, Array(12)).map(() => <SkeletonCard />)}
+          {[...Array(12)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : (
-			<div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
           {journals.map((journal) =>
             journal.id === editJournalId ? (
               renderForm()
             ) : (
               <div className="min-h-[481px]" key={journal.id}>
-                <img src={journal.photo as string} className="object-cover object-center w-full" />
+                <img src={journal.photo as string} alt="Preview" className="object-cover object-center w-full" />
                 <div className="flex font-insitutrial_bold text-xl mt-4 space-x-2">
                   <h1>{dayjs(journal.date).format("DD - MM - YYYY")}</h1>
                   <h1>{journal.title}</h1>

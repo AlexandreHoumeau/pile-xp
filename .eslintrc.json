@@ -1,6 +1,10 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
   "rules": {
-    "no-use-before-define": 0
+    "no-use-before-define": 0,
+    "@next/next/no-img-element": "off"
   }
 }

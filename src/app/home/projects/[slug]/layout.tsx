@@ -22,7 +22,7 @@ export default function ProjectLayout({
 			setCurrentIndex(currentIndex);
 		}
 		getSlugs();
-	}, []);
+	}, [slug]);
 
 	const precedentSlug = currentIndex > 0 ? slugs[currentIndex - 1] : slugs[slugs.length - 1];
 	const suivantSlug = currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : slugs[0];
@@ -44,7 +44,7 @@ export default function ProjectLayout({
 						<p>Precedent</p>
 					</div>
 				</div>
-				<div  onClick={goToSuivant} className="cursor-pointer hover:text-pink transition" >
+				<div onClick={goToSuivant} className="cursor-pointer hover:text-pink transition" >
 					<div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
 						<p>Suivant</p>
 						<FiChevronRight style={{ fontSize: 20 }} />

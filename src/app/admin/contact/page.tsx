@@ -17,6 +17,8 @@ import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 import SortableItem from "@/components/admin/SortableItem";
 import { InputComponent } from "@/components/Input";
 import TextareaComponent from "@/components/TextArea";
+import Image from "next/image";
+import { getPublicUrl } from "@/app/actions/files";
 
 export type FAQItem = {
   id: string;
@@ -63,7 +65,7 @@ export default function ContactPage() {
         email: data.email,
         phone_number: data.phone_number,
         photo_url: data.photo_url,
-        faq: data.faq.map((faq: any) => ({
+        faq: data.faq.map((faq: FAQItem) => ({
           id: faq.id ?? crypto.randomUUID(),
           question: faq.question,
           answer: faq.answer,
@@ -84,11 +86,14 @@ export default function ContactPage() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await updateContactInfo(data, newPhoto); // 👈 send file if exists
+      await updateContactInfo(data, newPhoto);
       toast.success("Contact informations saved");
       setNewPhoto(null);
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err?.message);
+      }
+      toast.error("Failed to save contact informations");
     }
   };
 
@@ -106,7 +111,6 @@ export default function ContactPage() {
       </div>
 
       <div className="flex justify-between gap-8">
-        {/* LEFT FORM */}
         <div className="w-full space-y-8">
           <Controller
             name="description"
@@ -221,17 +225,23 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <div className="flex h-auto flex-1 justify-center">
                   {newPhoto ? (
-                    <img
-                      className="h-[700] w-[700] object-cover"
-                      src={URL.createObjectURL(newPhoto)}
-                      alt="Preview"
-                    />
+                    <div className="relative h-[700px] w-[700px]">
+                      <Image
+                        src={URL.createObjectURL(newPhoto)}
+                        alt="Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   ) : field.value ? (
-                    <img
-                      className="h-[700] w-[700] object-cover"
-                      src={field.value}
-                      alt="Preview"
-                    />
+                    <div className="relative h-[700px] w-[700px]">
+                      <Image
+                        src={getPublicUrl([field.value])[0]}
+                        alt="Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
                     <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-lg">
                       <span>Aucune photo</span>

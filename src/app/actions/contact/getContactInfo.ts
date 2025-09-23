@@ -1,7 +1,6 @@
 import { FAQItem } from "@/app/admin/contact/page";
 import { listFAQ } from "./listFAQ";
 import { supabase } from "@/utils/supabaseClient";
-import { getPublicUrl } from "../files";
 
 export type ContactInfo = {
 	id: string;
@@ -13,11 +12,8 @@ export type ContactInfo = {
 }
 
 export const getContactInfo = async (): Promise<ContactInfo | null> => {
-
 	const faq = await listFAQ()
-
 	const { data } = await supabase.from("contact_info").select().single()
-
 
 	return {
 		...data,

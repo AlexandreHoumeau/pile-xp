@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import { Project } from "@/app/actions/projects/type";
 import { FaYoutube } from "react-icons/fa";
 import { VscFilePdf } from "react-icons/vsc";
+import Link from "next/link";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -79,14 +80,14 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 						<p className="text-pink text-3xl font-insitutrial_bold">À propos</p>
 						<p className="font-insitutrial">{project.description}</p>
 						<div className="mt-2 flex gap-6">
-							<a href="/" className="flex items-center gap-2 cursor-pointer">
+							<Link href="/" className="flex items-center gap-2 cursor-pointer">
 								<VscFilePdf size={30} />
 								<p className="underline">Télécharger l’article presse</p>
-							</a>
-							<a href="/" className="flex items-center gap-2 cursor-pointer">
+							</Link>
+							<Link href="/" className="flex items-center gap-2 cursor-pointer">
 								<FaYoutube size={35} />
 								<p className="underline">Voir la vidéo du projet</p>
-							</a>
+							</Link>
 						</div>
 					</div>
 				</div>

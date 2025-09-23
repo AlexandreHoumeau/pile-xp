@@ -1,5 +1,6 @@
 import getCroppedImg from "@/utils/cropImage";
 import Cropper from "react-easy-crop";
+import { JournalFormProps } from "./type";
 
 export function JournalForm({
   imageSrc,
@@ -20,8 +21,9 @@ export function JournalForm({
   onSubmit,
   isValid,
   resetForm,
-}: any) {
-  console.log(cropMode)
+}:
+  JournalFormProps
+) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -29,7 +31,7 @@ export function JournalForm({
     >
       <div className="relative w-full min-h-[481px] bg-red-200">
         {imageSrc && cropMode ? (
-          <div className="w-full flex-1 relative">
+          <div className="w-full h-[481px] relative">
             <Cropper
               objectFit="vertical-cover"
               image={imageSrc}
@@ -45,7 +47,7 @@ export function JournalForm({
               onClick={async () => {
                 setCropMode(false);
                 const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels!);
-                setImageSrc(croppedImage?.url);
+                setImageSrc(croppedImage?.url || null);
               }}
               className="absolute bottom-2 right-2 bg-pink text-white px-3 py-1"
             >
@@ -54,7 +56,8 @@ export function JournalForm({
           </div>
         ) : imageSrc ? (
           <>
-            <img src={imageSrc} className="object-cover object-center w-full" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img alt="Preview" src={imageSrc} className="object-cover object-center w-full" />
             <button
               type="button"
               onClick={() => {

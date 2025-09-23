@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/supabaseClient";
-import { deleteFiles, getFullPathPhoto, getPublicUrl } from "../files";
+import { deleteFiles } from "../files";
 
 export async function deleteJournalEntryById(id: string) {
   try {

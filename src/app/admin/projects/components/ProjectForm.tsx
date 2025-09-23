@@ -18,7 +18,7 @@ import Modal from "@/components/Modal";
 import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 
 interface ProjectFormProps {
-  onSubmit: (data: Inputs, photos: any[], blueprints: any[]) => Promise<void>;
+  onSubmit: (data: Inputs, photos: PhotoItem[], blueprints: PhotoItem[]) => Promise<void>;
   defaultValues?: Inputs;
   initialPhotos?: PhotoItem[];
   initialBlueprints?: PhotoItem[];

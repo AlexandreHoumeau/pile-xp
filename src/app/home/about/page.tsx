@@ -1,4 +1,5 @@
 import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInfo";
+import { getPublicUrl } from "@/app/actions/files";
 
 export default async function AboutPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo();
@@ -12,7 +13,7 @@ export default async function AboutPage() {
 				</div>
 
 				<div className="space-y-4">
-					<h1 className="font-insitutrial_bold text-4xl">Ce que fait l'agence</h1>
+					<h1 className="font-insitutrial_bold text-4xl">Ce que fait l&apos;agence</h1>
 					<p className="font-insitutrial text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 				</div>
 
@@ -25,7 +26,7 @@ export default async function AboutPage() {
 				<div className="flex items-start justify-center">
 					<div className="aspect-square w-full max-w-full">
 						<img
-							src={contactInfo.photo_url}
+							src={getPublicUrl([contactInfo.photo_url])[0]}
 							alt="Contact"
 							className="h-full w-full object-cover"
 						/>

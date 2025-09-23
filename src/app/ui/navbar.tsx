@@ -17,7 +17,7 @@ export default function Navbar() {
 	const pathName = usePathname();
 	const user = useAuth()
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [routePrefix, setRoutePrefix] = useState("/home") 
+	const [routePrefix, setRoutePrefix] = useState("/home")
 	const [positions, setPositions] = useState<{ left: number; width: number }[]>(
 		[]
 	);
@@ -38,11 +38,11 @@ export default function Navbar() {
 
 	useEffect(() => {
 		if (user?.isLoggedIn && pathName.includes("admin")) {
-			setRoutePrefix("/admin")	
+			setRoutePrefix("/admin")
 		} else {
 			setRoutePrefix("/home")
 		}
-	}, [pathName]);
+	}, [pathName, user]);
 
 	return (
 		<div className="font-insitutrial relative h-16 mb-6">

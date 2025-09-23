@@ -16,15 +16,14 @@ export const updateContactInfo = async (
       if (photoUrl) {
         const oldPath = photoUrl.split("/").pop();
         if (oldPath) {
-					await deleteFiles([oldPath])
+          await deleteFiles([oldPath])
         }
       }
 
       const newPhotoUrl = await storeFiles([newPhoto], "contact_photo")
-			photoUrl = newPhotoUrl[0]
+      photoUrl = newPhotoUrl[0]
     }
 
-    // remove `faq` before insert
     const { faq, ...contactInfoWithoutFaq } = contact_info;
 
     await supabase.from("contact_info").delete().neq("id", 0);
@@ -35,8 +34,10 @@ export const updateContactInfo = async (
       .insert({ ...contactInfoWithoutFaq, photo_url: photoUrl });
 
     if (error) throw error;
-  } catch (error: any) {
-    console.error(error);
-    throw Error(error.message || "Failed to update contact info");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Failed to update contact info");
   }
 }
