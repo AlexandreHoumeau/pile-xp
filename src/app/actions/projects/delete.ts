@@ -11,8 +11,8 @@ export async function deleteProjectById(id: string) {
       .single();
 
     // Delete project photos and blueprints
-    deleteFiles(exisitingProject?.photos, "photos");
-    deleteFiles(exisitingProject?.blueprints, "blueprints");
+    deleteFiles(exisitingProject?.photos);
+    deleteFiles(exisitingProject?.blueprints);
 
     // Delete project
     await supabase.from("projects").delete().eq("id", id);
