@@ -1,12 +1,12 @@
 "use client";
 
-import { FormEvent, useActionState, useEffect, useTransition } from "react";
+import { FormEvent, useActionState, useTransition } from "react";
 import { login } from "../actions/auth";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const [state, action] = useActionState(login, undefined);
-  const { isLoggedIn } = useAuth()
+  // const { isLoggedIn } = useAuth()
   const [isPending, startTransition] = useTransition();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {

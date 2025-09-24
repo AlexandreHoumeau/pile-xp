@@ -1,6 +1,6 @@
 "use client";
 import { LogoAnimation } from '@/components/LogoAnimation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const Loading: React.FC = () => {
     return (
