@@ -32,7 +32,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 	const listItem = (key: string, value: string) => (
 		value &&
-		<div className="flex gap-2 text-xl" key={key}>
+		<div className="flex gap-2 2xl:text-xl" key={key}>
 			<p className="font-insitutrial_bold">{key} :</p><p className="font-insitutrial">{value}</p>
 		</div>
 	);
@@ -92,13 +92,13 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 					</div>
 				</div>
 
-				<div className="space-y-4">
+				<div className="grid gap-8">
 					{project.blueprints?.map((bp, idx) => (
-						<div key={idx} className="">
+						<div key={idx} className="aspect-square overflow-hidden">
 							<img
 								src={bp}
-								alt={bp || `Blueprint ${idx + 1}`}
-								className="w-full object-cover rounded mb-2"
+								alt={bp ? `Blueprint ${idx + 1}` : `Blueprint ${idx + 1}`}
+								className="h-full w-full object-cover"
 							/>
 						</div>
 					))}

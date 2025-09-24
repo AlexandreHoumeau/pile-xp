@@ -17,7 +17,7 @@ export default function Navbar() {
 	const pathName = usePathname();
 	const user = useAuth()
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [routePrefix, setRoutePrefix] = useState("/home")
+	const [routePrefix, setRoutePrefix] = useState("/")
 	const [positions, setPositions] = useState<{ left: number; width: number }[]>(
 		[]
 	);
@@ -36,13 +36,13 @@ export default function Navbar() {
 
 
 
-	useEffect(() => {
-		if (user?.isLoggedIn && pathName.includes("admin")) {
-			setRoutePrefix("/admin")
-		} else {
-			setRoutePrefix("/home")
-		}
-	}, [pathName, user]);
+	// useEffect(() => {
+	// 	console.log("pathName", pathName)
+	// 	console.log(user)
+	// 	if (user?.isLoggedIn && pathName.includes("admin")) {
+	// 		setRoutePrefix("/admin")
+	// 	}
+	// }, [pathName, user]);
 
 	return (
 		<div className="font-insitutrial relative h-16 mb-6">
@@ -65,7 +65,7 @@ export default function Navbar() {
 						className="flex flex-wrap text-white align-center gap-x-32 px-16 py-1 bg-pink relative"
 					>
 						{links.map((link, index) => (
-							<Link key={index} onClick={() => setActiveIndex(index)} href={routePrefix + link.href}>
+							<Link key={index} onClick={() => setActiveIndex(index)} href={link.href}>
 								{link.name}
 							</Link>
 						))}

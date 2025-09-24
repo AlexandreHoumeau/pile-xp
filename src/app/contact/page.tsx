@@ -2,6 +2,7 @@ import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInf
 import { FAQItem } from "@/app/ui/FAQItem";
 import { BsThreads } from "react-icons/bs";
 import { FaPhoneAlt } from "react-icons/fa";
+import { getPublicUrl } from "../actions/files";
 
 export default async function ContactPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo();
@@ -42,7 +43,7 @@ export default async function ContactPage() {
 				<div className="flex items-start justify-center">
 					<div className="aspect-square w-full max-w-full">
 						<img
-							src={contactInfo.photo_url}
+							src={getPublicUrl([contactInfo.photo_url])[0]}
 							alt="Contact"
 							className="h-screen w-full object-cover"
 						/>
