@@ -1,10 +1,12 @@
 "use client";
 
-import { FormEvent, useActionState, useTransition } from "react";
+import { FormEvent, useActionState, useEffect, useTransition } from "react";
 import { login } from "../actions/auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const [state, action] = useActionState(login, undefined);
+  const { isLoggedIn } = useAuth()
   const [isPending, startTransition] = useTransition();
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -15,6 +17,13 @@ export default function LoginPage() {
       action(formData);
     });
   };
+
+  // useEffect(() => {
+  //   console.log("LoginPage - isLoggedIn:", isLoggedIn);
+  //   if (isLoggedIn) {
+  //     // window.location.href = "/admin";
+  //   }
+  // }, [state]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-100 px-6 py-12 lg:px-8">

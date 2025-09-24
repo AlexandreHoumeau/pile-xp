@@ -26,19 +26,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log(children)
-
   return (
     <html lang="en">
       <body
         className={`${insitutrialRegular.variable} ${insitutrialBold.variable} antialiased flex flex-col justify-between`}
       >
-        <Navbar />
         <WithAuthenticationContext
           initialState={{
             isLoggedIn: false,
           }}
         >
+          <Navbar />
           <main className="mb-auto min-h-screen">
             {children}
           </main>

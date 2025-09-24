@@ -86,15 +86,7 @@ export interface AuthenticationState {
 
 interface AuthActions {
   setUser: (user: AuthTokenResponsePassword) => void;
-  // logout: () => void;
-  // user: User | null;
 }
-
-// export interface AuthenticationState {
-//   user?: User;
-//   error?: any;
-//   isLoggedIn: boolean;
-// }
 
 type AuthenticationAction = {
   action: Actions;
