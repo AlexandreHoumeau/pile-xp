@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,9 +14,7 @@ const links = [
 
 export default function Navbar() {
 	const pathName = usePathname();
-	const user = useAuth()
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [routePrefix, setRoutePrefix] = useState("/")
 	const [positions, setPositions] = useState<{ left: number; width: number }[]>(
 		[]
 	);
@@ -33,16 +30,6 @@ export default function Navbar() {
 			setPositions(newPositions);
 		}
 	}, [pathName]);
-
-
-
-	// useEffect(() => {
-	// 	console.log("pathName", pathName)
-	// 	console.log(user)
-	// 	if (user?.isLoggedIn && pathName.includes("admin")) {
-	// 		setRoutePrefix("/admin")
-	// 	}
-	// }, [pathName, user]);
 
 	return (
 		<div className="font-insitutrial relative h-16 mb-6">
