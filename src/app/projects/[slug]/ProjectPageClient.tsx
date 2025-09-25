@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
-
+	console.log(project.blueprints)
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;

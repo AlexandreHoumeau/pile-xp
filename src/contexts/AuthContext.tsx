@@ -36,6 +36,25 @@ export const WithAuthenticationContext: React.FC<{
   }, []);
 
   useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((_event: unknown, session: Session) => {
+      if (session) {
+        dispatch({
+          action: Actions.Login,
+          payload: { user: session.user, session },
+        });
+      } else {
+        dispatch({ action: Actions.Logout });
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {console.log(state)}, [state])
+
+  useEffect(() => {
     const storedState = localStorage.getItem("authState");
     if (storedState) {
       dispatch({

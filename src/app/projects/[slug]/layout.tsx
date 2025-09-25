@@ -1,6 +1,6 @@
 "use client";
 import { listProjectsBySlug } from '@/app/actions/projects/list';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FiChevronLeft } from "react-icons/fi";
 import { FiChevronRight } from "react-icons/fi";
@@ -13,7 +13,7 @@ export default function ProjectLayout({
 	const { slug } = useParams();
 	const [slugs, setSlugs] = useState<string[] | []>([]);
 	const [currentIndex, setCurrentIndex] = useState<number>(0);
-
+	const router = useRouter()
 	useEffect(() => {
 		const getSlugs = async () => {
 			const data = await listProjectsBySlug();
@@ -28,11 +28,11 @@ export default function ProjectLayout({
 	const suivantSlug = currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : slugs[0];
 
 	const goToPrecedent = () => {
-		window.location.href = `/home/projects/${precedentSlug}`;
+		router.push(`/projects/${precedentSlug}`);
 	}
 
 	const goToSuivant = () => {
-		window.location.href = `/home/projects/${suivantSlug}`;
+		window.location.href = `/projects/${suivantSlug}`;
 	}
 
 	return (
