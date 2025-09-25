@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [state, action] = useActionState(login, undefined);
-  const { isLoggedIn, user } = useAuth()
+  const { isLoggedIn } = useAuth()
   const router = useRouter()
   const [isPending, startTransition] = useTransition();
 
@@ -22,12 +22,12 @@ export default function LoginPage() {
 
    useEffect(() => {
      if (isLoggedIn) {
-        router.push("/admin")
+        router.push("/admin/projects")
      }
-   }, [state]);
+   }, [state, isLoggedIn]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-100 px-6 py-12 lg:px-8">
+    <div className="flex items-center justify-center px-6 py-12 lg:px-8">
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md bg-white p-8 shadow-lg rounded-2xl">
         <form onSubmit={onSubmit} className="space-y-6">
           {state?.message && (

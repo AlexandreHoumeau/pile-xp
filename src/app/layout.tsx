@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
+import ConditionalPublicNavbar from "./ui/ConditionalPublicNavbar";
 import Footer from "./ui/footer";
-import Navbar from "./ui/navbar";
 
 const insitutrialRegular = localFont({
   src: "./fonts/for-insitutrial-regular.otf",
@@ -36,7 +36,7 @@ export default function RootLayout({
             isLoggedIn: false,
           }}
         >
-          <Navbar />
+          <ConditionalPublicNavbar />
           <main className="mb-auto min-h-screen">
             {children}
           </main>

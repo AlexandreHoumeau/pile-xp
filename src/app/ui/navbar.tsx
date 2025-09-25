@@ -1,9 +1,8 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const userLinks = [
@@ -16,8 +15,6 @@ const adminLinks = userLinks.map(l => ({ ...l, href: `/admin${l.href}` }));
 
 export default function Navbar() {
 	const pathName = usePathname();
-	const router = useRouter();
-  const { isLoggedIn } = useAuth()
 
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [positions, setPositions] = useState<{ left: number; width: number }[]>(
@@ -25,13 +22,7 @@ export default function Navbar() {
 	);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const isAdminRoute = pathName.startsWith("/admin");
-	const links = isAdminRoute ? adminLinks : userLinks;
-
-	useEffect(() => {
-		if (isAdminRoute && !isLoggedIn) {
-			router.push("/login");
-		}
-	}, [isAdminRoute, isLoggedIn, router]);
+	const links = isAdminRoute ? adminLinks : userLinks;;
 
 	useEffect(() => {
 		if (containerRef.current) {
