@@ -36,11 +36,11 @@ export const WithAuthenticationContext: React.FC<{
   }, []);
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((_event: unknown, session: Session) => {
-      if (session) {
+    const { data: listener } = supabase.auth.onAuthStateChange((_event: unknown, session: unknown) => {
+      if (session && typeof session === "object" && "user" in session) {
         dispatch({
           action: Actions.Login,
-          payload: { user: session.user, session },
+          payload: { user: session?.user, session },
         });
       } else {
         dispatch({ action: Actions.Logout });
