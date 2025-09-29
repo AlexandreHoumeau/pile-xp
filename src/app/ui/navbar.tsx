@@ -2,44 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-
-const userLinks = [
-	{ href: "/about", name: "À propos" },
-	{ href: "/", name: "Projets" },
-	{ href: "/journal", name: "Journal" },
-	{ href: "/contact", name: "Contact" },
-];
-const adminLinks = userLinks.map(l => ({ ...l, href: `/admin${l.href}` }));
 
 export default function Navbar() {
-	const pathName = usePathname();
-
-	const containerRef = useRef<HTMLDivElement>(null);
-	const [positions, setPositions] = useState<{ left: number; width: number }[]>(
-		[]
-	);
-	const [activeIndex, setActiveIndex] = useState(0);
-	const isAdminRoute = pathName.startsWith("/admin");
-	const links = isAdminRoute ? adminLinks : userLinks;;
-
-	useEffect(() => {
-		if (containerRef.current) {
-			const children = Array.from(
-				containerRef.current.children
-			) as HTMLElement[];
-			const newPositions = children.map(child => ({
-				left: child.offsetLeft,
-				width: child.offsetWidth,
-			}));
-			setPositions(newPositions);
-
-			const idx = links.findIndex(l => l.href === pathName);
-			if (idx >= 0) setActiveIndex(idx);
-		}
-	}, [pathName, links]);
-
 	return (
 		<div className="font-insitutrial relative mb-6">
 			<div className="flex flex-wrap items-center text-xl">
@@ -55,7 +19,6 @@ export default function Navbar() {
 
 				<div className="flex-1 relative">
 					<div
-						ref={containerRef}
 						className="grid grid-cols-4 text-white items-center bg-pink relative"
 					>
 						<div className="bg-zinc-400 mr-10 py-2 text-center text-white">
@@ -65,7 +28,7 @@ export default function Navbar() {
 							<Link
 								href={"/about"}
 							>
-								L'Atelier
+								L&apos;Atelier
 							</Link>
 							<Link
 								href={"/"}

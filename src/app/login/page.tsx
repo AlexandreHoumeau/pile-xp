@@ -20,11 +20,11 @@ export default function LoginPage() {
     });
   };
 
-   useEffect(() => {
-     if (isLoggedIn) {
-        router.push("/admin/projects")
-     }
-   }, [state, isLoggedIn]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/admin/projects")
+    }
+  }, [state, isLoggedIn, router]);
 
   return (
     <div className="flex font-insitutrial_bold items-center justify-center px-6 py-12 lg:px-8">
@@ -90,11 +90,10 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className={`w-full  bg-pink px-4 py-2 text-white font-semibold shadow-md transition-all duration-300 ${
-                isPending
+              className={`w-full  bg-pink px-4 py-2 text-white font-semibold shadow-md transition-all duration-300 ${isPending
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-indigo-700 hover:shadow-lg"
-              }`}
+                }`}
             >
               {isPending ? "Signing in..." : "Sign in"}
             </button>
