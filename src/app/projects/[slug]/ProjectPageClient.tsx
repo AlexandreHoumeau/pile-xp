@@ -8,7 +8,6 @@ import Link from "next/link";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
-	console.log(project.blueprints)
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;
@@ -66,10 +65,9 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 								{listItem("Lieu", project.address)}
 								{listItem("Maître d’ouvrage", project.project_owner)}
 								{listItem("Maîtrise d’oeuvre", project.project_management)}
-								{listItem("Programme", project.program)}
+								{listItem("Status", project.status)}
 							</div>
 							<div>
-								{listItem("Status", project.status)}
 								{listItem("Livraison", project.delivery)}
 								{listItem("Surface", project.surface)}
 								{listItem("Budget", project.budget)}

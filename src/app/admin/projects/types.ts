@@ -11,12 +11,14 @@ export type Inputs = {
   address: string;
   project_owner: string;
   project_management: string;
-  program: string;
+  program: string[];
   status: string;
   delivery: string;
   surface: string;
   budget: string;
-  description: string;
+  description: string
+  pdf_url?: File | string | null;
+  youtube_url?: string;
 };
 
 export type ProjectCard = {

@@ -2,6 +2,7 @@ import { Inputs, PhotoItem } from "@/app/admin/projects/types";
 import { supabase } from "@/utils/supabaseClient";
 import { deleteFiles, getFullPathPhoto, storeFiles } from "../files";
 import { getProjectById } from "./get";
+import { syncTags } from "../tag/SyncTags";
 
 export async function updateProject(
   formData: Inputs,
@@ -10,7 +11,6 @@ export async function updateProject(
   id: string
 ) {
   try {
-    // Get existing project
     const data = await getProjectById(id);
 
     const newPhotos: File[] = photos
@@ -23,6 +23,17 @@ export async function updateProject(
 
     const storedPhotoUrls = await storeFiles(newPhotos, "photos");
     const storedBluePrintUrls = await storeFiles(newBlueprints, "blueprints");
+    let storedNewPdfUrl: string | null = null;
+
+
+    if (formData.pdf_url && formData.pdf_url instanceof File) {
+      const [pdfUrl] = await storeFiles([formData.pdf_url], "pdfs");
+      storedNewPdfUrl = pdfUrl;
+    }
+
+    if (formData.pdf_url === null && data?.pdf_url) {
+      await deleteFiles([data.pdf_url]);
+    }
 
     // Create a new array of photo with the public url from "photos"
     const newPhotosUrls: string[] = [];
@@ -61,6 +72,7 @@ export async function updateProject(
 
     const projectData = {
       ...formData,
+      pdf_url: storedNewPdfUrl ? storedNewPdfUrl : formData.pdf_url === null ? null : data?.pdf_url,
       photos: newPhotosUrls,
       blueprints: newBlueprintUrls,
     };
@@ -73,8 +85,10 @@ export async function updateProject(
     if (error) {
       throw error;
     }
+
+    await syncTags(projectData.program);
+
   } catch (error) {
-    console.error("Error updating project:", error);
     throw error;
   }
 }

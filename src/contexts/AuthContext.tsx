@@ -52,8 +52,6 @@ export const WithAuthenticationContext: React.FC<{
     };
   }, []);
 
-  useEffect(() => {console.log(state)}, [state])
-
   useEffect(() => {
     const storedState = localStorage.getItem("authState");
     if (storedState) {

@@ -8,11 +8,14 @@ export type Project = {
     description: string;
     id: string;
     photos: string[];
-    program: string;
+    program: string[];
     project_management: string;
     project_owner: string;
     status: string;
     surface: string;
     title: string;
+    updated_at: string;
+    pdf_url?: string;
+    youtube_url?: string;
   };
   

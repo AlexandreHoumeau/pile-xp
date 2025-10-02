@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -39,6 +39,9 @@ export default function ProjectForm({
     useState<PhotoItem[]>(initialPhotos);
   const [selectedBluePrints, setSelectedBluePrints] =
     useState<PhotoItem[]>(initialBlueprints);
+  const [pdfFile, setPdfFile] = useState<File | null | string>(null);
+  const [programTags, setProgramTags] = useState<string[]>([]);
+
   const photosInputRef = useRef<HTMLInputElement>(null);
   const bluePrintsInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -52,6 +55,15 @@ export default function ProjectForm({
   } = useForm<Inputs>({
     defaultValues,
   });
+
+  useEffect(() => {
+    if (defaultValues?.program) {
+      setProgramTags(defaultValues.program);
+    }
+    if (defaultValues?.pdf_url) {
+      setPdfFile(defaultValues.pdf_url);
+    }
+  }, [defaultValues]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files, name } = e.target;
@@ -75,7 +87,7 @@ export default function ProjectForm({
       url: URL.createObjectURL(file),
       file,
     }));
-  
+
   const updateSelectedFiles = (name: string, selectedFiles: PhotoItem[]) => {
     if (name === "photos") {
       const updatedPhotos = [...selectedPhotos, ...selectedFiles];
@@ -98,7 +110,11 @@ export default function ProjectForm({
   const onSave = async () => {
     toast.promise(
       async () => {
-        const formData = getValues();
+        const formData = {
+          ...getValues(),
+          program: programTags,
+          pdf_url: pdfFile,
+        };
         await onSubmit(formData, selectedPhotos, selectedBluePrints);
       },
       {
@@ -131,7 +147,12 @@ export default function ProjectForm({
           photosInputRef={photosInputRef}
         />
         <div className="grid grid-cols-2">
-          <ProjectDetails register={register} technicalData={technicalData} />
+          <ProjectDetails
+            onProgramChange={setProgramTags}
+            programTags={programTags}
+            pdf={pdfFile}
+            onPdfChange={setPdfFile} register={register} technicalData={technicalData}
+          />
           <BlueprintSection
             selectedBluePrints={selectedBluePrints}
             register={register}

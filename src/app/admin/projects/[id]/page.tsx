@@ -92,5 +92,8 @@ const projectToInputs = (project: Project): Inputs => ({
   delivery: project.delivery,
   surface: project.surface,
   budget: project.budget,
+  pdf_url: project.pdf_url,
+  youtube_url: project.youtube_url,
+
   description: project.description,
 });

@@ -39,6 +39,28 @@ export async function deleteFiles(fileUrls: string[]) {
   }
 }
 
+export async function emptyFolder(folder: string) {
+  const { data: files, error: listError } = await supabase
+    .storage
+    .from("projects")
+    .list(folder, { limit: 1000 }); // adjust limit if needed
+
+  if (listError) throw listError;
+  if (!files || files.length === 0) return;
+
+  // Step 2: Build array of paths to delete
+  const paths = files.map((file) => `${folder}/${file.name}`);
+
+  // Step 3: Delete them
+  const { error: deleteError } = await supabase
+    .storage
+    .from("projects")
+    .remove(paths);
+
+  if (deleteError) throw deleteError;
+}
+
+
 export const getPublicUrl = (paths: string[]) => {
   return paths.map((path) => URL_SUFFIX + path);
 };
