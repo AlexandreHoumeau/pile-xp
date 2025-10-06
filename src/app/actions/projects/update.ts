@@ -86,7 +86,7 @@ export async function updateProject(
       throw error;
     }
 
-    await syncTags(projectData.program);
+    await syncTags();
 
   } catch (error) {
     throw error;
