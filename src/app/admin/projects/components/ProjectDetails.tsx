@@ -5,6 +5,7 @@ import { UseFormRegister } from "react-hook-form";
 import { Inputs } from "../types";
 import { FaTimes } from "react-icons/fa";
 import { TagInput } from "@/components/admin/TagInput";
+import { listTags } from "@/app/actions/tag/list";
 
 type ProjectDetailsProps = {
   register: UseFormRegister<Inputs>;
@@ -26,7 +27,21 @@ export default function ProjectDetails({
   const [programmeTags, setProgrammeTags] = useState<string[]>([]);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
 
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const data = await listTags();
+        setExistingTags(data || []);
+      } catch (error) {
+       console.error("Error fetching tags:", error);
+      }
+    }
+
+    fetchTags();
+  }, []);
   const removePdf = () => {
     setPdfFile(null);
     setPdfUrl(null);
@@ -126,6 +141,7 @@ export default function ProjectDetails({
         </div>
         <TagInput
           value={programmeTags}
+          existingTags={existingTags}
           onChange={setProgrammeTags}
           placeholder="Ajoutez un programme et appuyez sur Entrée"
         />
