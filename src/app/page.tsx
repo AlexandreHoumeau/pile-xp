@@ -1,28 +1,64 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { listProjects } from "./actions/projects/list";
+import { listProjects, listProjectsByTag } from "./actions/projects/list";
 import { Project } from "./actions/projects/type";
 import { getPublicUrl } from "./actions/files";
-
+import { listTags } from "./actions/tag/list";
+import { capitalizeFirstLetter } from "@/utils/general";
 
 const Home: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState<string>("");
+
+  const fetchProjects = async (tag?: string) => {
+    const data = tag ? await listProjectsByTag(tag) : await listProjects();
+    const refinedData = data?.map((project) => ({
+      ...project,
+      photos: getPublicUrl(project.photos),
+    }));
+    setProjects(refinedData || []);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const projectList = await listProjects();
-      const refinedData = projectList?.map((project) => ({
-        ...project,
-        photos: getPublicUrl(project.photos),
-      }));
-      setProjects(refinedData || []);
-    };
-
-    fetchData();
+    fetchProjects();
   }, []);
 
+  useEffect(() => {
+    const fetchTags = async () => {
+      const existingTags = await listTags();
+      setTags(existingTags || []);
+    };
+
+    fetchTags();
+  }, []);
+
+  const handleTagSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const tag = event.target.value;
+    setSelectedTag(tag);
+    await fetchProjects(tag || undefined);
+  };
+
   return (
-    <main className="p-8">
+    <main className="px-8 font-insitutrial">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-4 px-8">
+        <div className="col-span-3" />
+        <div className="pb-8">
+          <select
+            value={selectedTag}
+            onChange={handleTagSelect}
+            className="border text-gray-400 border-gray-300 p-2 w-full"
+          >
+            <option value="">Catégorie</option>
+            {tags.map((tag) => (
+              <option key={tag} value={tag}>
+                {capitalizeFirstLetter(tag)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8">
         {projects.map((project) => (
           <a

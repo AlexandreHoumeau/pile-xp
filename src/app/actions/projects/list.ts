@@ -22,3 +22,19 @@ export const listProjectsBySlug = async (): Promise<string[] | []> => {
 
   return data?.map(data => data.slug) || [];
 };
+
+
+//list by project tags
+export const listProjectsByTag = async (tag: string): Promise<Project[] | null> => {
+  const { data } = await supabase.from("projects").select().contains("program", [tag]);
+
+  if (data?.length) {
+    data.map((project) => ({
+      ...project,
+      photos: getPublicUrl(project.photos),
+      blueprints: getPublicUrl(project.blueprints),
+    }));
+  }
+
+  return data;
+}
