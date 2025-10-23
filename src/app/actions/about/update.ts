@@ -1,58 +1,65 @@
-"use server"
+"use server";
 
-import { supabase } from "@/utils/supabaseClient"
-import { AboutSection } from "./get"
-import { deleteFiles, getPublicUrl, storeFiles } from "../files"
+import { supabaseAdmin as supabase } from "@/utils/supabaseAdmin"
+import { AboutSection } from "./get";
+import { deleteFiles, storeFiles } from "../files";
+import { getPublicUrl } from "@/utils/general";
 
 export async function updateAboutInfo(
-    aboutId: string,
-    newSections: AboutSection[],
-    newPhotos: (File | string)[], // Can be existing URLs or new files
+  aboutId: string,
+  newSections: AboutSection[],
+  newPhotos: (File | string)[],
 ) {
-    // 1️⃣ Fetch the current photos
-    const { data: currentAbout } = await supabase
-        .from("about_info")
-        .select("photos")
-        .eq("id", aboutId)
-        .single()
 
-    const currentPhotos: string[] = currentAbout?.photos ?? []
+  const { data: currentAbout, error: fetchError } = await supabase
+    .from("about_info")
+    .select("photos")
+    .eq("id", aboutId)
+    .maybeSingle();
 
-    // 2️⃣ Split between new files and existing URLs
-    const newFiles = newPhotos.filter((p) => p instanceof File) as File[]
-    const keptUrls = newPhotos.filter((p) => typeof p === "string") as string[]
+  if (fetchError) throw fetchError;
+  const currentPhotos: string[] = currentAbout?.photos ?? [];
 
-    // 3️⃣ Upload new files to Supabase storage
-    const uploadedPaths = newFiles.length > 0 ? await storeFiles(newFiles, "about") : []
-    const uploadedUrls = getPublicUrl(uploadedPaths)
+  const newFiles = newPhotos.filter((p) => p instanceof File) as File[];
+  const keptUrls = newPhotos.filter((p) => typeof p === "string") as string[];
 
-    // 4️⃣ Delete removed photos from storage
-    const removedPhotos = currentPhotos.filter((url) => !keptUrls.includes(url))
-    if (removedPhotos.length > 0) {
-        await deleteFiles(removedPhotos)
-    }
+  const uploadedPaths = newFiles.length > 0 ? await storeFiles(newFiles, "about") : [];
+  const uploadedUrls = getPublicUrl(uploadedPaths);
 
-    // 5️⃣ Update the about_info table
-    const finalPhotos = [...keptUrls, ...uploadedUrls]
-    const { error: aboutError } = await supabase
-        .from("about_info")
-        .update({ photos: finalPhotos })
-        .eq("id", aboutId)
+  const removedPhotos = currentPhotos.filter((url) => !keptUrls.includes(url));
 
-    if (aboutError) throw aboutError
+  console.log({ currentPhotos, keptUrls, removedPhotos });
+  if (removedPhotos.length > 0) {
+    await deleteFiles(removedPhotos);
+  }
 
-    // 6️⃣ Update sections (simplest way: delete all + reinsert)
-    await supabase.from("about_sections").delete().eq("about_id", aboutId)
+  const finalPhotos = [...keptUrls, ...uploadedUrls].filter(Boolean);
 
-    const { error: sectionError } = await supabase.from("about_sections").insert(
-        newSections.map((s) => ({
-            about_id: aboutId,
-            title: s.title,
-            description: s.description,
-        })),
-    )
+  const { error: aboutError } = await supabase
+    .from("about_info")
+    .update({ photos: finalPhotos })
+    .eq("id", aboutId);
 
-    if (sectionError) throw sectionError
+  if (aboutError) throw aboutError;
 
-    return { success: true, photos: finalPhotos }
+  const { error: deleteError } = await supabase
+    .from("about_sections")
+    .delete()
+    .in("about_id", [aboutId]);
+
+  if (deleteError) throw deleteError;
+
+  if (newSections.length > 0) {
+    const { error: insertError } = await supabase.from("about_sections").insert(
+      newSections.map((s) => ({
+        about_id: aboutId,
+        title: s.title,
+        description: s.description,
+      })),
+    );
+
+    if (insertError) throw insertError;
+  }
+
+  return { success: true, photos: finalPhotos };
 }

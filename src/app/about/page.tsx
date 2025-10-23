@@ -1,5 +1,5 @@
 import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInfo";
-import { getPublicUrl } from "@/app/actions/files";
+import { getPublicUrl } from "@/utils/general";
 
 export default async function AboutPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo();

@@ -1,6 +1,6 @@
 import { supabase } from "@/utils/supabaseClient";
 import { Project } from "./type";
-import { getPublicUrl } from "../files";
+import { getPublicUrl } from "@/utils/general";
 
 export const listProjects = async (): Promise<Project[] | null> => {
   const { data } = await supabase.from("projects").select();

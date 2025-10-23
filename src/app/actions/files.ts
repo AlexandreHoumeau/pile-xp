@@ -1,5 +1,7 @@
+"use server";
 import { supabase } from "@/utils/supabaseClient";
-export const URL_SUFFIX = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/projects/`;
+import { supabaseAdmin } from "@/utils/supabaseAdmin"
+import { getFullPathPhoto } from "@/utils/general";
 
 export async function storeFiles(files: File[], folder: string) {
   const fileUrls = [];
@@ -10,11 +12,11 @@ export async function storeFiles(files: File[], folder: string) {
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/\s+/g, "")}`;
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseAdmin.storage
       .from("projects")
       .upload(filePath, file);
 
-      if (error) {
+    if (error) {
       throw error;
     }
 
@@ -28,7 +30,8 @@ export async function storeFiles(files: File[], folder: string) {
 
 export async function deleteFiles(fileUrls: string[]) {
   for (const fileUrl of fileUrls) {
-    const { error } = await supabase.storage
+    console.log(getFullPathPhoto(fileUrl))
+    const { error } = await supabaseAdmin.storage
       .from("projects")
       .remove([getFullPathPhoto(fileUrl)]);
 
@@ -59,12 +62,3 @@ export async function emptyFolder(folder: string) {
 
   if (deleteError) throw deleteError;
 }
-
-
-export const getPublicUrl = (paths: string[]) => {
-  return paths.map((path) => URL_SUFFIX + path);
-};
-
-export const getFullPathPhoto = (publicUrl: string) => {
-  return publicUrl.replace(URL_SUFFIX, "");
-};

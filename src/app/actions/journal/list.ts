@@ -1,6 +1,6 @@
 import { supabase } from "@/utils/supabaseClient";
-import { getPublicUrl } from "../files";
 import { JournalEntry } from "./type";
+import { getPublicUrl } from "@/utils/general";
 
 export const listJournals = async (): Promise<JournalEntry[] | null> => {
   const { data } = await supabase.from("journal").select();

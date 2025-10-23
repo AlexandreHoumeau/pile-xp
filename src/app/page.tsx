@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { listProjects, listProjectsByTag } from "./actions/projects/list";
 import { Project } from "./actions/projects/type";
-import { getPublicUrl } from "./actions/files";
+import { getPublicUrl } from "@/utils/general";
 import { listTags } from "./actions/tag/list";
 import { capitalizeFirstLetter } from "@/utils/general";
 

@@ -2,7 +2,7 @@ import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInf
 import { FAQItem } from "@/app/ui/FAQItem";
 import { BsThreads } from "react-icons/bs";
 import { FaPhoneAlt } from "react-icons/fa";
-import { getPublicUrl } from "../actions/files";
+import { getPublicUrl } from "@/utils/general";
 
 export default async function ContactPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo();

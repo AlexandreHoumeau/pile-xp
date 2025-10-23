@@ -1,8 +1,9 @@
 import { Inputs, PhotoItem } from "@/app/admin/projects/types";
 import { supabase } from "@/utils/supabaseClient";
-import { deleteFiles, getFullPathPhoto, storeFiles } from "../files";
+import { deleteFiles, storeFiles } from "../files";
 import { getProjectById } from "./get";
 import { syncTags } from "../tag/SyncTags";
+import { getFullPathPhoto } from "@/utils/general";
 
 export async function updateProject(
   formData: Inputs,

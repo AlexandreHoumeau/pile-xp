@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { FaRegSave, FaTrash, FaPlus } from "react-icons/fa";
+import { addAboutInfo } from "@/app/actions/about/add";
+import { AboutSection, getAboutInfo } from "@/app/actions/about/get";
+import { updateAboutInfo } from "@/app/actions/about/update";
 import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 import { InputComponent } from "@/components/Input";
 import TextareaComponent from "@/components/TextArea";
 import Image from "next/image";
-import { getPublicUrl } from "@/app/actions/files";
-import { AboutSection, getAboutInfo } from "@/app/actions/about/get";
-import { updateAboutInfo } from "@/app/actions/about/update";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FaPlus, FaRegSave, FaTrash } from "react-icons/fa";
 
 type Section = {
   title: string;
@@ -49,6 +49,7 @@ export default function AboutAdminPage() {
     const loadAboutInfo = async () => {
       setLoading(true);
       const data = await getAboutInfo();
+
       if (!data) {
         setLoading(false);
         return;
@@ -70,15 +71,23 @@ export default function AboutAdminPage() {
     try {
       setLoading(true);
 
-      if (!data.id) throw new Error("Missing about_info ID.");
+      const payload = {
+        sections: data.sections as AboutSection[],
+        photos: data.photos.map((p, i) => newPhotos[i] || p),
+      };
+      console.log(data)
+      if (data.id) {
+        await updateAboutInfo(data.id, payload.sections, payload.photos);
+        toast.success("À propos mis à jour !");
+      } else {
+        await addAboutInfo(payload.sections, payload.photos);
+        toast.success("À propos créé !");
+      }
 
-      await updateAboutInfo(data.id, data.sections as AboutSection[], data.photos.map((p, i) => newPhotos[i] || p));
-
-      toast.success("À propos mis à jour !");
       setNewPhotos([null, null, null, null]);
     } catch (err) {
       console.error(err);
-      toast.error("Échec de la mise à jour");
+      toast.error("Échec de l’enregistrement");
     } finally {
       setLoading(false);
     }
@@ -179,7 +188,7 @@ export default function AboutAdminPage() {
                           />
                         ) : field.value ? (
                           <Image
-                            src={getPublicUrl([field.value])[0]}
+                            src={field.value}
                             alt={`Preview ${idx + 1}`}
                             fill
                             className="object-cover"

@@ -1,6 +1,4 @@
 import { supabase } from "@/utils/supabaseClient"
-import { getPublicUrl } from "../files"
-import { error } from "console"
 
 export type AboutSection = {
   id: string
@@ -40,7 +38,7 @@ export const getAboutInfo = async (): Promise<AboutInfo | null> => {
 
   return {
     id: about.id,
-    photos: getPublicUrl(about.photos) ?? [],
+    photos: about.photos ?? [],
     sections: sections ?? [],
   }
 }

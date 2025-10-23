@@ -18,7 +18,7 @@ import SortableItem from "@/components/admin/SortableItem";
 import { InputComponent } from "@/components/Input";
 import TextareaComponent from "@/components/TextArea";
 import Image from "next/image";
-import { getPublicUrl } from "@/app/actions/files";
+import { getPublicUrl } from "@/utils/general";
 
 export type FAQItem = {
   id: string;

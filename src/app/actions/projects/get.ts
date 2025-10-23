@@ -1,6 +1,6 @@
 import { supabase } from "@/utils/supabaseClient";
 import { Project } from "./type";
-import { getPublicUrl } from "../files";
+import { getPublicUrl } from "@/utils/general";
 
 export const getProjectById = async (id: string): Promise<Project | null> => {
   const { data } = await supabase
