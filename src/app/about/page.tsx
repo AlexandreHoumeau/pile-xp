@@ -1,38 +1,33 @@
-import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInfo";
-import { getPublicUrl } from "@/utils/general";
+import { AboutInfo, getAboutInfo } from "../actions/about/get";
 
 export default async function AboutPage() {
-	const contactInfo: ContactInfo | null = await getContactInfo();
+	const aboutInfo: AboutInfo | null = await getAboutInfo();
 
 	return (
-		<main className="grid grid-cols-1 md:grid-cols-2 px-16 py-8 gap-12 min-h-screen">
-			<div className="space-y-8">
-				<div className="space-y-4">
-					<h1 className="font-insitutrial_bold text-4xl">Qui on est ?</h1>
-					<p className="font-insitutrial text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-				</div>
-
-				<div className="space-y-4">
-					<h1 className="font-insitutrial_bold text-4xl">Ce que fait l&apos;agence</h1>
-					<p className="font-insitutrial text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-				</div>
-
-				<div className="space-y-4">
-					<h1 className="font-insitutrial_bold text-4xl">Nos réflexions</h1>
-					<p className="font-insitutrial text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+		<main className="grid grid-cols-1 gap-16 md:grid-cols-2 px-16 py-8 min-h-screen">
+			<div className="w-full flex">
+				<div className="space-y-8">
+					{aboutInfo?.sections.map((section) => (
+						<div key={section.id} className="space-y-4">
+							<h1 className="font-insitutrial_bold text-4xl">{section.title}</h1>
+							<p className="font-insitutrial text-lg">{section.description}</p>
+						</div>
+					))}
 				</div>
 			</div>
-			{contactInfo?.photo_url && (
-				<div className="flex items-start justify-center">
-					<div className="aspect-square w-full max-w-full">
-						<img
-							src={getPublicUrl([contactInfo.photo_url])[0]}
-							alt="Contact"
-							className="h-full w-full object-cover"
-						/>
-					</div>
+			<div className="flex items-start justify-end">
+				<div className="grid grid-cols-2 gap-4 w-full">
+					{aboutInfo?.photos?.slice(0, 4).map((photo, idx) => (
+						<div key={idx} className="aspect-square w-full overflow-hidden">
+							<img
+								src={photo}
+								alt={`About photo ${idx + 1}`}
+								className="h-full w-full object-cover"
+							/>
+						</div>
+					))}
 				</div>
-			)}
+			</div>
 		</main>
 	)
 }

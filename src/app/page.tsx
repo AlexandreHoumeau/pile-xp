@@ -40,10 +40,10 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main className="px-8 font-insitutrial">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-4 px-8">
-        <div className="col-span-3" />
-        <div className="pb-8">
+    <main className="md:px-8 px-4 font-insitutrial">
+      <div className="md:grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-4 lg:px-8">
+        <div className="lg:col-span-3 col-span-2" />
+        <div className="lg:pb-8 pb-4">
           <select
             value={selectedTag}
             onChange={handleTagSelect}
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-4 lg:px-8">
         {projects.map((project) => (
           <a
             key={project.id}

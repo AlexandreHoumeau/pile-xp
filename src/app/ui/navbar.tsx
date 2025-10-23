@@ -5,26 +5,27 @@ import Link from "next/link";
 
 export default function Navbar() {
 	return (
-		<div className="font-insitutrial relative mb-6">
-			<div className="flex flex-wrap items-center text-xl">
-				<div className="pl-2 pr-5">
+		<div className="font-insitutrial relative mb-4 lg:mb-6">
+			<div className="flex flex-wrap items-center font-2xs 2xl:text-xl lg:text-base">
+				<div className="pl-2 pr-2 xl:pr-5 hidden lg:block">
 					<Image
-						width={40}
-						height={18}
 						src="/mini_logo.png"
 						alt="logo"
-						className="mt-2"
+						width={40}
+						height={18}
+						className="mt-2 xl:w-auto w-8"
 					/>
 				</div>
 
 				<div className="flex-1 relative">
 					<div
-						className="grid grid-cols-4 text-white items-center bg-pink relative"
+						className="lg:grid grid-cols-4 text-white items-center bg-pink relative"
 					>
-						<div className="bg-zinc-400 mr-10 py-2 text-center text-white">
+						<div className="bg-zinc-400 flex justify-between lg:mr-10 py-2 md:px-6 px-4 xl:px-12 lg:text-center text-white">
 							<p>Agence d’architecture</p>
+							<p className="lg:hidden block">Menu</p>
 						</div>
-						<div className="flex justify-around mr-10">
+						<div className="lg:flex justify-around lg:mr-10 hidden">
 							<Link
 								href={"/about"}
 							>
@@ -36,7 +37,7 @@ export default function Navbar() {
 								Nos Projets
 							</Link>
 						</div>
-						<div className="flex justify-around -ml-8 mr-10">
+						<div className="lg:flex justify-around -ml-8 mr-10 hidden">
 							<Link
 								href={"/journal"}
 							>
@@ -52,16 +53,16 @@ export default function Navbar() {
 				</div>
 
 			</div>
-			<div className="grid grid-cols-4 gap-8 px-16">
-				<div className="col-span-3" />
-					<div className="bg-pink p-4 py-6 flex-1">
-						<Image
-							width={280}
-							height={40}
-							src="/full_logo_white.svg"
-							alt="logo"
-							className="mt-2"
-						/>
+			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-12 lg:px-16">
+				<div className="lg:col-span-3 md:col-span-2 col-span-1" />
+				<div className="bg-pink lg:p-4 px-6 py-2 lg:py-6 flex-1">
+					<Image
+						src="/full_logo_white.svg"
+						alt="logo"
+						width={280} // aspect ratio reference
+						height={40}
+						className="w-72  lg:mt-2 lg:w-auto lg:h-10"
+					/>
 				</div>
 			</div>
 		</div>
