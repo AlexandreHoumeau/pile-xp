@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Project } from "@/app/actions/projects/type";
 import { FaYoutube } from "react-icons/fa";
 import { VscFilePdf } from "react-icons/vsc";
@@ -8,6 +8,10 @@ import Link from "next/link";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const infoSectionRef = useRef<HTMLDivElement>(null);
+	const [showPhotosButton, setShowPhotosButton] = useState(false);
+
+	// Horizontal scroll for images
 	useEffect(() => {
 		const el = scrollRef.current;
 		if (!el) return;
@@ -28,40 +32,90 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 		return () => el.removeEventListener("wheel", onWheel);
 	}, []);
 
+	// Detect when we’ve scrolled past the “Données techniques” section
+	useEffect(() => {
+		const handleScroll = () => {
+			const infoTop = infoSectionRef.current?.offsetTop || 0;
+			const scrollY = window.scrollY;
+			setShowPhotosButton(scrollY + window.innerHeight / 2 > infoTop);
+		};
 
-	const listItem = (key: string, value: string) => (
-		value &&
-		<div className="flex gap-2 2xl:text-xl" key={key}>
-			<p className="font-insitutrial_bold">{key} :</p><p className="font-insitutrial">{value}</p>
-		</div>
-	);
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
+	const scrollToInfos = () => {
+		if (infoSectionRef.current) {
+			infoSectionRef.current.scrollIntoView({ behavior: "smooth" });
+		}
+	};
+
+	const scrollToPhotos = () => {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const listItem = (key: string, value: string) =>
+		value && (
+			<div className="flex gap-2 lg:text-lg text-base 2xl:text-xl" key={key}>
+				<p className="font-insitutrial_bold">{key} :</p>
+				<p className="font-insitutrial">{value}</p>
+			</div>
+		);
 
 	return (
-		<div>
-			<div className="">
+		<div className="relative">
+			<div
+				onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
+				className="fixed bottom-10 z-50 right-10 bg-pink p-4 px-8 rounded-full text-white text-xl lg:hidden cursor-pointer transition-all duration-300"
+			>
+				<p>{showPhotosButton ? "Photos" : "Infos"}</p>
+			</div>
+
+			<div className="lg:p0 md:px-12 px-4">
+				<div className="flex justify-between lg:flex md:text-5xl text-3xl text-pink lg:pl-16 pt-8 pb-4 lg:hidden">
+					<h1 className="font-insitutrial_bold">{project.title}</h1>
+					<p className="font-insitutrial">{project.delivery}</p>
+				</div>
+
 				<div
 					ref={scrollRef}
-					className="flex no-scrollbar overflow-x-auto space-x-[27px] pb-2 pl-[64px]"
+					className="lg:flex grid grid-cols-1 space-y-4 md:space-y-8 lg:space-y-0 no-scrollbar lg:overflow-x-auto lg:space-x-[27px] pb-2 lg:pl-[64px]"
 				>
 					{project.photos?.map((photo, idx) => (
 						<img
 							key={idx}
 							src={photo}
 							alt={`Project photo ${idx + 1}`}
-							className="h-[535px] object-cover"
+							className="lg:h-[535px] object-cover"
 						/>
 					))}
 				</div>
 			</div>
 
-			<div className="grid px-16  mx-auto grid-cols-1 md:grid-cols-2 gap-8">
-				<div className="md:col-span-1 sticky top-0 z-10 self-start bg-white pt-4">
-					<h1 className={`bg-transparent text-pink text-5xl focus:outline-none font-insitutrial_bold`}
-					>{project.title}</h1>
-					<div className="mt-8 space-y-4 text-lg">
-						<p className="text-pink text-3xl font-insitutrial_bold">Données techniques</p>
-						<div className="flex gap-8">
-							<div>
+			{/* Info Section */}
+			<div ref={infoSectionRef} className="lg:grid lg:px-16 px-4 mx-auto grid-cols-1 lg:grid-cols-2 gap-8">
+				<div className="grid gap-8 order-last">
+					{project.blueprints?.map((bp, idx) => (
+						<div key={idx} className="aspect-square overflow-hidden">
+							<img
+								src={bp}
+								alt={`Blueprint ${idx + 1}`}
+								className="h-full w-full object-cover"
+							/>
+						</div>
+					))}
+				</div>
+
+				<div className="lg:col-span-1 sticky top-0 z-10 self-start bg-white pt-4">
+					<h1 className="bg-transparent text-pink text-5xl focus:outline-none font-insitutrial_bold hidden lg:block mb-8">
+						{project.title}
+					</h1>
+
+					{/* Données techniques */}
+					<div className="mt-8 lg:space-y-4 space-y-2 text-lg">
+						<p className="text-pink text-lg lg:text-3xl font-insitutrial_bold">Données techniques</p>
+						<div className="lg:flex gap-8">
+							<div className="mb-4 lg:mb-0">
 								{listItem("Lieu", project.address)}
 								{listItem("Maître d’ouvrage", project.project_owner)}
 								{listItem("Maîtrise d’oeuvre", project.project_management)}
@@ -74,10 +128,12 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 							</div>
 						</div>
 					</div>
+
+					{/* À propos */}
 					<div className="mt-12 space-y-4 text-lg">
-						<p className="text-pink text-3xl font-insitutrial_bold">À propos</p>
-						<p className="font-insitutrial">{project.description}</p>
-						<div className="mt-2 flex gap-6">
+						<p className="text-pink text-lg lg:text-3xl font-insitutrial_bold">À propos</p>
+						<p className="font-insitutrial lg:text-lg text-base">{project.description}</p>
+						<div className="mt-2 lg:flex gap-6">
 							<Link href="/" className="flex items-center gap-2 cursor-pointer">
 								<VscFilePdf size={30} />
 								<p className="underline">Télécharger l’article presse</p>
@@ -88,18 +144,6 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 							</Link>
 						</div>
 					</div>
-				</div>
-
-				<div className="grid gap-8">
-					{project.blueprints?.map((bp, idx) => (
-						<div key={idx} className="aspect-square overflow-hidden">
-							<img
-								src={bp}
-								alt={bp ? `Blueprint ${idx + 1}` : `Blueprint ${idx + 1}`}
-								className="h-full w-full object-cover"
-							/>
-						</div>
-					))}
 				</div>
 			</div>
 		</div>

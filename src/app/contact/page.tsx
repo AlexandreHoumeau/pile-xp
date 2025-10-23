@@ -12,7 +12,7 @@ export default async function ContactPage() {
 			<div className="space-y-8">
 				<div className="space-y-4">
 					<h1 className="font-insitutrial_bold text-4xl">Pile XP</h1>
-					<p className="font-insitutrial text-lg">{contactInfo?.description}</p>
+					<p className="font-insitutrial text-lg whitespace-pre-line">{contactInfo?.description}</p>
 				</div>
 
 				<div className="space-y-4">
@@ -27,7 +27,7 @@ export default async function ContactPage() {
 					<div className="flex">
 						<div className="flex underline">
 							<BsThreads className="inline text-3xl mr-2" />
-							<p className="font-insitutrial text-lg">{contactInfo?.email}</p>
+							<p className="font-insitutrial text-lg ">{contactInfo?.email}</p>
 						</div>
 						<div className="flex">
 							<FaPhoneAlt className="inline text-xl mr-2 ml-6 mt-1" />

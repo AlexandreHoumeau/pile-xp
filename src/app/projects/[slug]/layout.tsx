@@ -37,7 +37,7 @@ export default function ProjectLayout({
 
 	return (
 		<div className="font-insitutrial">
-			<div className="flex justify-between items-center px-16 py-4 mx-auto">
+			<div className="flex justify-between items-center px-16 py-4 mx-auto hidden lg:flex">
 				<div onClick={goToPrecedent} className="cursor-pointer hover:text-pink transition" >
 					<div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
 						<FiChevronLeft style={{ fontSize: 20 }} />

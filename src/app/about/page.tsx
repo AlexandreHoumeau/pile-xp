@@ -10,7 +10,9 @@ export default async function AboutPage() {
 					{aboutInfo?.sections.map((section) => (
 						<div key={section.id} className="space-y-4">
 							<h1 className="font-insitutrial_bold text-4xl">{section.title}</h1>
-							<p className="font-insitutrial text-lg">{section.description}</p>
+							<p className="font-insitutrial text-lg whitespace-pre-line">
+								{section.description}
+							</p>
 						</div>
 					))}
 				</div>

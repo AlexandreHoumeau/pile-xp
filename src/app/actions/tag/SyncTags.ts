@@ -1,9 +1,12 @@
-import { supabase } from "@/utils/supabaseClient";
+"use server";
+
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
+
 
 export async function syncTags() {
 	try {
 		// 1. Get all programs (array of tags per project)
-		const { data: projects, error: projectsError } = await supabase
+		const { data: projects, error: projectsError } = await supabaseAdmin
 			.from("projects")
 			.select("program")
 			.not("program", "is", null);
@@ -20,7 +23,7 @@ export async function syncTags() {
 		];
 
 		// 2. Get all existing tags from "tags" table
-		const { data: existingTags, error: existingTagsError } = await supabase
+		const { data: existingTags, error: existingTagsError } = await supabaseAdmin
 			.from("tags")
 			.select("name");
 
@@ -34,7 +37,7 @@ export async function syncTags() {
 
 		// 4. Insert missing tags
 		if (tagsToAdd.length > 0) {
-			const { error: insertError } = await supabase
+			const { error: insertError } = await supabaseAdmin
 				.from("tags")
 				.insert(tagsToAdd.map(name => ({ name })));
 
@@ -46,7 +49,7 @@ export async function syncTags() {
 
 		// 5. Delete tags no longer in use
 		if (tagsToRemove.length > 0) {
-			const { error: deleteError } = await supabase
+			const { error: deleteError } = await supabaseAdmin
 				.from("tags")
 				.delete()
 				.in("name", tagsToRemove);

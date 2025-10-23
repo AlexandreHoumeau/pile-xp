@@ -1,9 +1,10 @@
+"use server";
 import { Inputs, PhotoItem } from "@/app/admin/projects/types";
-import { supabase } from "@/utils/supabaseClient";
 import { deleteFiles, storeFiles } from "../files";
 import { getProjectById } from "./get";
 import { syncTags } from "../tag/SyncTags";
 import { getFullPathPhoto } from "@/utils/general";
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 
 export async function updateProject(
   formData: Inputs,
@@ -78,7 +79,7 @@ export async function updateProject(
       blueprints: newBlueprintUrls,
     };
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from("projects")
       .update(projectData)
       .eq("id", id);

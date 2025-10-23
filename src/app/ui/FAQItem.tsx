@@ -29,7 +29,7 @@ export function FAQItem({
           open ? "max-h-40 opacity-100 mt-2" : "max-h-0 opacity-0"
         }`}
       >
-        <p className="font-insitutrial text-lg text-gray-700">{answer}</p>
+        <p className="font-insitutrial text-lg text-gray-700 whitespace-pre-line">{answer}</p>
       </div>
     </div>
   );

@@ -200,12 +200,11 @@ export default function AboutAdminPage() {
                     </div>
 
                     <div className="flex justify-center space-x-2">
-                      <AdminIconButton
+                      <button
                         type="button"
-                        label={field.value ? "Modifier la photo" : "Ajouter une photo"}
                         onClick={() => photoInputRefs[idx].current?.click()}
-                        className="text-center border border-black min-h-max"
-                      />
+                        className="text-center p-2 border border-black"
+                      >{field.value ? "Modifier la photo" : "Ajouter une photo"}</button>
                       <input
                         ref={photoInputRefs[idx]}
                         type="file"
@@ -220,17 +219,16 @@ export default function AboutAdminPage() {
                         }}
                       />
                       {field.value && (
-                        <AdminIconButton
+                        <button
                           type="button"
-                          label="Supprimer"
                           onClick={() => {
                             setValue(`photos.${idx}`, "");
                             const updatedPhotos = [...newPhotos];
                             updatedPhotos[idx] = null;
                             setNewPhotos(updatedPhotos);
                           }}
-                          className="text-center min-h-max border-pink text-pink border"
-                        />
+                          className="text-center p-2 min-h-max border-pink text-pink border"
+                        >Supprimer</button>
                       )}
                     </div>
                   </div>
