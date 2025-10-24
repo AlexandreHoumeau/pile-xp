@@ -12,7 +12,7 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <div style={{ position: "sticky", top: "-2.5em"}} className="font-insitutrial mb-4 lg:mb-6">
+    <div className="font-insitutrial sticky md:top-0 -top-[2.5em] md:block">
       <div className="flex flex-wrap items-center text-2xs 2xl:text-xl lg:text-base">
         <div className="pl-2 pr-2 xl:pr-5 hidden lg:block">
           <Image
@@ -26,12 +26,12 @@ export default function Navbar() {
 
         <div className="flex-1 ">
           <div className="lg:grid grid-cols-4 text-white items-center bg-pink relative">
-            <div className="bg-zinc-400 flex justify-between lg:mr-10 py-2 md:px-12 px-4 xl:px-12 lg:text-center text-white">
+            <div className="bg-zinc-400 flex justify-between lg:mr-10 py-2 md:px-10 px-4 xl:px-12 lg:text-center text-white">
               <p>Agence d&apos;architecture</p>
             </div>
 
             {/* 🧷 Sticky Menu Button (mobile only) */}
-            <div className="lg:hidden sticky top-0 z-50">
+            <div className="lg:hidden sticky md:block top-0 z-50">
               <button
                 onClick={toggleMenu}
                 className="bg-pink flex justify-between z-50 items-center py-2 md:px-12 px-4 xl:px-12 text-white w-full"
@@ -55,7 +55,7 @@ export default function Navbar() {
 
       {/* --- Mobile menu overlay --- */}
       <div
-        className={`fixed inset-0 bg-pink z-50 lg:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0 bg-pink z-[100] lg:hidden transition-all duration-300 ease-in-out ${
           isMenuOpen
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-full pointer-events-none"

@@ -40,7 +40,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main className="md:px-8 px-4 font-insitutrial">
+    <main className="md:px-8 px-4 mt-4 font-insitutrial">
       <div className="md:grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-4 lg:px-8">
         <div className="lg:col-span-3 col-span-2" />
         <div className="lg:pb-8 pb-4">
@@ -64,14 +64,14 @@ const Home: React.FC = () => {
           <a
             key={project.id}
             href={`/projects/${project.slug}`}
-            className="transition-transform duration-300 hover:scale-105"
+            className="transition-transform duration-300 hover:scale-105 -z-10"
           >
             {project.photos && project.photos.length > 0 ? (
-              <div className="aspect-square w-full overflow-hidden">
+              <div className="aspect-square w-full overflow-hidden -z-10">
                 <img
                   src={project.photos[0]}
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover -z-10"
                 />
               </div>
             ) : (

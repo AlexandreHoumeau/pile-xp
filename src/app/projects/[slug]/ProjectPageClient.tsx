@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
 import { Project } from "@/app/actions/projects/type";
-import { FaYoutube } from "react-icons/fa";
-import { VscFilePdf } from "react-icons/vsc";
-import Link from "next/link";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { useParams, useRouter } from 'next/navigation';
 import { useProjectSlugs } from "@/hooks/useProjectSlugs";
+import Link from "next/link";
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from "react";
+import { FaYoutube } from "react-icons/fa";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { VscFilePdf } from "react-icons/vsc";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -81,7 +81,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 	return (
 		<div className="relative">
-			<div className="fixed bottom-5 z-50 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+			<div className="fixed lg:hidden bottom-5 z-50 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
 
 				<div className="bg-pink p-2 rounded-full" onClick={goToPrevious}>
 					<FiChevronLeft style={{ fontSize: 20 }} className="text-white" />
@@ -89,7 +89,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 				<div
 					onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
-					className=" shadow-2xl bg-pink p-2 px-8 rounded-full text-white text-xl lg:hidden cursor-pointer transition-all duration-300"
+					className=" shadow-2xl bg-pink p-2 px-8 rounded-full text-white text-xl  cursor-pointer transition-all duration-300"
 				>
 					<p className="text-sm sm:text-base">{showPhotosButton ? "Photos" : "Infos"}</p>
 				</div>
