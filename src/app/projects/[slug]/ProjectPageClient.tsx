@@ -5,11 +5,18 @@ import { Project } from "@/app/actions/projects/type";
 import { FaYoutube } from "react-icons/fa";
 import { VscFilePdf } from "react-icons/vsc";
 import Link from "next/link";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useParams, useRouter } from 'next/navigation';
+import { useProjectSlugs } from "@/hooks/useProjectSlugs";
 
 export default function ProjectPageClient({ project }: { project: Project }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const infoSectionRef = useRef<HTMLDivElement>(null);
 	const [showPhotosButton, setShowPhotosButton] = useState(false);
+	const { slug } = useParams();
+	const router = useRouter()
+	const data = useProjectSlugs(slug as string);
+	const { previousSlug, nextSlug } = data || {};
 
 	// Horizontal scroll for images
 	useEffect(() => {
@@ -62,13 +69,35 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 			</div>
 		);
 
+	const goToNext = () => {
+		router.push(`/projects/${previousSlug}`);
+	}
+
+	const goToPrevious = () => {
+		window.location.href = `/projects/${nextSlug}`;
+	}
+
+
+
 	return (
 		<div className="relative">
-			<div
-				onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
-				className="fixed bottom-10 z-50 right-10 bg-pink p-4 px-8 rounded-full text-white text-xl lg:hidden cursor-pointer transition-all duration-300"
-			>
-				<p>{showPhotosButton ? "Photos" : "Infos"}</p>
+			<div className="fixed bottom-5 z-50 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+
+				<div className="bg-pink p-2 rounded-full" onClick={goToPrevious}>
+					<FiChevronLeft style={{ fontSize: 20 }} className="text-white" />
+				</div>
+
+				<div
+					onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
+					className=" shadow-2xl bg-pink p-2 px-8 rounded-full text-white text-xl lg:hidden cursor-pointer transition-all duration-300"
+				>
+					<p className="text-sm sm:text-base">{showPhotosButton ? "Photos" : "Infos"}</p>
+				</div>
+				<div className="bg-pink p-2 rounded-full" onClick={goToNext}>
+					<FiChevronRight style={{ fontSize: 20 }} className="text-white" />
+				</div>
+
+
 			</div>
 
 			<div className="lg:p0 md:px-12 px-4">
@@ -86,7 +115,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 							key={idx}
 							src={photo}
 							alt={`Project photo ${idx + 1}`}
-							className="lg:h-[535px] object-cover"
+							className="lg:h-[535px] -z-10 object-cover"
 						/>
 					))}
 				</div>
@@ -96,17 +125,17 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 			<div ref={infoSectionRef} className="lg:grid lg:px-16 px-4 mx-auto grid-cols-1 lg:grid-cols-2 gap-8">
 				<div className="grid gap-8 order-last">
 					{project.blueprints?.map((bp, idx) => (
-						<div key={idx} className="aspect-square overflow-hidden">
+						<div key={idx} className="aspect-square -z-10 overflow-hidden">
 							<img
 								src={bp}
 								alt={`Blueprint ${idx + 1}`}
-								className="h-full w-full object-cover"
+								className="h-full w-full -z-10 object-cover"
 							/>
 						</div>
 					))}
 				</div>
 
-				<div className="lg:col-span-1 sticky top-0 z-10 self-start bg-white pt-4">
+				<div className="lg:col-span-1 sticky top-0 -z-10 self-start bg-white pt-4">
 					<h1 className="bg-transparent text-pink text-5xl focus:outline-none font-insitutrial_bold hidden lg:block mb-8">
 						{project.title}
 					</h1>

@@ -1,9 +1,8 @@
 "use client";
-import { listProjectsBySlug } from '@/app/actions/projects/list';
+import { useProjectSlugs } from '@/hooks/useProjectSlugs';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { FiChevronLeft } from "react-icons/fi";
-import { FiChevronRight } from "react-icons/fi";
+import React from 'react';
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export default function ProjectLayout({
 	children,
@@ -11,28 +10,19 @@ export default function ProjectLayout({
 	children: React.ReactNode;
 }) {
 	const { slug } = useParams();
-	const [slugs, setSlugs] = useState<string[] | []>([]);
-	const [currentIndex, setCurrentIndex] = useState<number>(0);
 	const router = useRouter()
-	useEffect(() => {
-		const getSlugs = async () => {
-			const data = await listProjectsBySlug();
-			const currentIndex = data.findIndex(s => s === slug);
-			setSlugs(data)
-			setCurrentIndex(currentIndex);
-		}
-		getSlugs();
-	}, [slug]);
+	const data = useProjectSlugs(slug as string);
 
-	const precedentSlug = currentIndex > 0 ? slugs[currentIndex - 1] : slugs[slugs.length - 1];
-	const suivantSlug = currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : slugs[0];
+
+	if (!data) return null;
+	const { previousSlug, nextSlug } = data;
 
 	const goToPrecedent = () => {
-		router.push(`/projects/${precedentSlug}`);
+		router.push(`/projects/${previousSlug}`);
 	}
 
 	const goToSuivant = () => {
-		window.location.href = `/projects/${suivantSlug}`;
+		window.location.href = `/projects/${nextSlug}`;
 	}
 
 	return (
