@@ -103,7 +103,7 @@ export default function Journal() {
     try {
       const values = getValues();
       const isEditing = Boolean(editJournalId);
-      let payload: any = { ...values };
+      const payload = { ...values };
 
       // Handle image only if new or adding
       if ((!isEditing || hasNewPhoto) && imageSrc) {
