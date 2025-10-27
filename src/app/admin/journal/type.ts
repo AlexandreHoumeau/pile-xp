@@ -17,7 +17,7 @@ export type JournalFormProps = {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     register: UseFormRegister<JournalInputs>;
     handleSubmit: UseFormHandleSubmit<FieldValues>;
-    onSubmit: () => Promise<string | undefined>;
+    onSubmit: () => Promise<void>;
     isValid: boolean;
     resetForm: () => void;
 };

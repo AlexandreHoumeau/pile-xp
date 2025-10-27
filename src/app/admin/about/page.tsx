@@ -75,7 +75,7 @@ export default function AboutAdminPage() {
         sections: data.sections as AboutSection[],
         photos: data.photos.map((p, i) => newPhotos[i] || p),
       };
-      console.log(data)
+
       if (data.id) {
         await updateAboutInfo(data.id, payload.sections, payload.photos);
         toast.success("À propos mis à jour !");

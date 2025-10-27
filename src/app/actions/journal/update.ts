@@ -3,6 +3,8 @@
 import { supabase } from "@/utils/supabaseClient";
 import { JournalEntry } from "./type";
 import { deleteFiles, storeFiles } from "../files";
+import { getFullPathPhoto } from "@/utils/general";
+
 
 type UpdateJournalEntryData = Partial<JournalEntry> & {
   photo?: File | string;
@@ -13,10 +15,9 @@ export async function updateJournalEntryById(
   data: UpdateJournalEntryData
 ): Promise<void> {
   try {
-
     const { data: existingJournalEntry } = await supabase
       .from("journal")
-      .select("photo")
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -29,7 +30,7 @@ export async function updateJournalEntryById(
       }
     }
 
-    const { error } = await supabase.from("journal").update(data).eq("id", id);
+    const { error } = await supabase.from("journal").update({ ...data, photo: getFullPathPhoto(data.photo! as string) }).eq("id", id);
 
     if (error) {
       throw error;

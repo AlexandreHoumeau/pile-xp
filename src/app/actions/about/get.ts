@@ -19,7 +19,6 @@ export const getAboutInfo = async (): Promise<AboutInfo | null> => {
     .select("*")
     .single()
 
-  console.log(about, aboutError)
   if (aboutError || !about) {
     console.error("Error fetching about_info:", aboutError)
     return null

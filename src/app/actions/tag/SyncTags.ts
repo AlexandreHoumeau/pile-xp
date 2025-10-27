@@ -37,7 +37,6 @@ export async function syncTags() {
 				.insert(tagsToAdd.map(name => ({ name })));
 
 			if (insertError) throw insertError;
-			console.log("Inserted new tags:", tagsToAdd);
 		} else {
 			console.log("No new tags to insert.");
 		}
@@ -49,7 +48,6 @@ export async function syncTags() {
 				.in("name", tagsToRemove);
 
 			if (deleteError) throw deleteError;
-			console.log("Removed unused tags:", tagsToRemove);
 		} else {
 			console.log("No tags to remove.");
 		}

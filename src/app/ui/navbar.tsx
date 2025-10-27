@@ -12,7 +12,7 @@ export default function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <div className="font-insitutrial sticky md:top-0 -top-[2.5em] md:block">
+    <div className="font-insitutrial z-50 sticky md:top-0 -top-[2.5em] md:block">
       <div className="flex flex-wrap items-center text-2xs 2xl:text-xl lg:text-base">
         <div className="pl-2 pr-2 xl:pr-5 hidden lg:block">
           <Image

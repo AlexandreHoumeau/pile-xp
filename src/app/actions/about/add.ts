@@ -9,7 +9,6 @@ export async function addAboutInfo(
   sections: AboutSection[],
   photos: (File | string)[],
 ) {
-  console.log({ sections, photos });
   const newFiles = photos.filter((p) => p instanceof File) as File[];
   const keptUrls = photos.filter((p) => typeof p === "string") as string[];
 

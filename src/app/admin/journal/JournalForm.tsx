@@ -26,6 +26,7 @@ export function JournalForm({
 ) {
   return (
     <form
+    key={"new_form"}
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-[481px]"
     >

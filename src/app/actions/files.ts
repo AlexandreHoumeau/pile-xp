@@ -30,7 +30,6 @@ export async function storeFiles(files: File[], folder: string) {
 
 export async function deleteFiles(fileUrls: string[]) {
   for (const fileUrl of fileUrls) {
-    console.log(getFullPathPhoto(fileUrl))
     const { error } = await supabaseAdmin.storage
       .from("projects")
       .remove([getFullPathPhoto(fileUrl)]);

@@ -28,7 +28,6 @@ export async function updateAboutInfo(
 
   const removedPhotos = currentPhotos.filter((url) => !keptUrls.includes(url));
 
-  console.log({ currentPhotos, keptUrls, removedPhotos });
   if (removedPhotos.length > 0) {
     await deleteFiles(removedPhotos);
   }

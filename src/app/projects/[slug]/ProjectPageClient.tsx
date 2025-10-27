@@ -135,13 +135,13 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 					))}
 				</div>
 
-				<div className="lg:col-span-1 sticky top-0 -z-10 self-start bg-white pt-4">
+				<div className="lg:col-span-1 sticky top-0 z-0 self-start bg-white pt-4">
 					<h1 className="bg-transparent text-pink text-5xl focus:outline-none font-insitutrial_bold hidden lg:block mb-8">
 						{project.title}
 					</h1>
 
 					{/* Données techniques */}
-					<div className="mt-8 lg:space-y-4 space-y-2 text-lg">
+					<div className="mt-8 lg:space-y-4 z-0 space-y-2 text-lg">
 						<p className="text-pink text-lg lg:text-3xl font-insitutrial_bold">Données techniques</p>
 						<div className="lg:flex gap-8">
 							<div className="mb-4 lg:mb-0">
@@ -159,18 +159,25 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 					</div>
 
 					{/* À propos */}
-					<div className="mt-12 space-y-4 text-lg">
+					<div className="mt-12 space-y-4 z-0 text-lg">
 						<p className="text-pink text-lg lg:text-3xl font-insitutrial_bold">À propos</p>
 						<p className="font-insitutrial lg:text-lg text-base">{project.description}</p>
 						<div className="mt-2 lg:flex gap-6">
-							<Link href="/" className="flex items-center gap-2 cursor-pointer">
-								<VscFilePdf size={30} />
-								<p className="underline">Télécharger l’article presse</p>
-							</Link>
-							<Link href="/" className="flex items-center gap-2 cursor-pointer">
-								<FaYoutube size={35} />
-								<p className="underline">Voir la vidéo du projet</p>
-							</Link>
+							{project.pdf_url && (
+								<Link href={project.pdf_url}
+									target="_blank"
+									className="flex items-center gap-2 cursor-pointer">
+									<VscFilePdf size={30} />
+									<p className="underline">Télécharger l’article presse</p>
+								</Link>
+
+							)}
+							{project.youtube_url && (
+								<Link target="_blank" href={project.youtube_url} className="flex items-center gap-2 cursor-pointer">
+									<FaYoutube size={35} />
+									<p className="underline">Voir la vidéo du projet</p>
+								</Link>
+							)}
 						</div>
 					</div>
 				</div>

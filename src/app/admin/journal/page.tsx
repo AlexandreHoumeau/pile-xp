@@ -39,6 +39,7 @@ export default function Journal() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasNewPhoto, setHasNewPhoto] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -82,6 +83,7 @@ export default function Journal() {
       setCropMode(true);
       setValue("photo", file);
       setImageSrc(imageUrl);
+      setHasNewPhoto(true);
     };
     img.src = imageUrl;
   };
@@ -97,35 +99,46 @@ export default function Journal() {
   };
 
   const submitForm = async () => {
-    if (!imageSrc) return toast.error("No image selected");
     setIsSubmitting(true);
     try {
-      const croppedBlob = await getCroppedImg(imageSrc, {
-        ...croppedAreaPixels!,
-        x: 0,
-        y: 0,
-      });
+      const values = getValues();
+      const isEditing = Boolean(editJournalId);
+      let payload: any = { ...values };
 
-      if (!croppedBlob) throw new Error("No cropped image available");
+      // Handle image only if new or adding
+      if ((!isEditing || hasNewPhoto) && imageSrc) {
+        const croppedBlob = await getCroppedImg(imageSrc, {
+          ...croppedAreaPixels!,
+          x: 0,
+          y: 0,
+        });
 
-      const file = new File([croppedBlob.blob], `${Date.now()}.jpg`, { type: "image/jpeg" });
+        if (!croppedBlob) throw new Error("No cropped image available");
 
-      const payload = { ...getValues(), photo: file };
+        const file = new File([croppedBlob.blob], `${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
 
-      if (editJournalId) {
-        await updateJournalEntryById(editJournalId, payload);
+        payload.photo = file;
+      }
+
+      if (isEditing) {
+        await updateJournalEntryById(editJournalId!, payload);
         toast.success("Article modifié");
       } else {
-        await addJournal(payload);
+        if (!(payload.photo instanceof File)) {
+          throw new Error("No image selected");
+        }
+
+        // 🧩 fix: assert the type for TS
+        await addJournal(payload as Omit<JournalInputs, "photo"> & { photo: File });
         toast.success("Image uploadée");
       }
 
-      getJournals();
+      await getJournals();
       resetFormState();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
+      if (error instanceof Error) toast.error(error.message);
       toast.error("Une erreur est survenue");
     } finally {
       setIsSubmitting(false);
@@ -137,6 +150,7 @@ export default function Journal() {
     setIsAddingNew(false);
     setImageSrc(null);
     setCroppedAreaPixels(null);
+    setHasNewPhoto(false);
     reset();
   };
 
@@ -155,51 +169,66 @@ export default function Journal() {
     setValue("date", journal.date);
     setValue("photo", journal.photo);
     setImageSrc(journal.photo as string);
+    setHasNewPhoto(false);
   };
 
-  const renderForm = () =>
-    <JournalForm
-      imageSrc={imageSrc}
-      crop={crop}
-      zoom={zoom}
-      cropMode={cropMode}
-      isSubmitting={isSubmitting}
-      setCrop={setCrop}
-      setZoom={setZoom}
-      setCropMode={setCropMode}
-      setImageSrc={setImageSrc}
-      croppedAreaPixels={croppedAreaPixels}
-      setCroppedAreaPixels={setCroppedAreaPixels}
-      photoInputRef={photoInputRef}
-      handleFileChange={handleFileChange}
-      register={register}
-      handleSubmit={handleSubmit}
-      onSubmit={submitForm}
-      isValid={isValid}
-      resetForm={resetFormState}
-    />
-    ;
+  const journalFormProps = {
+    imageSrc,
+    crop,
+    zoom,
+    cropMode,
+    isSubmitting,
+    setCrop,
+    setZoom,
+    setCropMode,
+    setImageSrc,
+    croppedAreaPixels,
+    setCroppedAreaPixels,
+    photoInputRef,
+    handleFileChange,
+    register,
+    handleSubmit,
+    onSubmit: submitForm,
+    isValid,
+    resetForm: resetFormState,
+  };
 
   return (
     <div className="min-h-full font-insitutrial">
       {isLoadingList ? (
         <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
-          {[...Array(12)].map((_, i) => <SkeletonCard key={i} />)}
+          {[...Array(12)].map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 gap-6">
-          {journals.map((journal) =>
-            journal.id === editJournalId ? (
-              renderForm()
-            ) : (
+          {journals.map((journal) => {
+            if (journal.id === editJournalId) {
+              return <JournalForm key={journal.id} {...journalFormProps} />;
+            }
+
+            return (
               <div className="min-h-[481px]" key={journal.id}>
-                <img src={journal.photo as string} alt="Preview" className="object-cover object-center w-full" />
+                <img
+                  src={journal.photo as string}
+                  alt="Preview"
+                  className="object-cover object-center w-full"
+                />
                 <div className="flex font-insitutrial_bold text-xl mt-4 space-x-2">
                   <h1>{dayjs(journal.date).format("DD - MM - YYYY")}</h1>
-                  <h1>{journal.title}</h1>
+                  <h1>{journal.title as string}</h1>
                 </div>
                 <p>{journal.description}</p>
-                {journal.url && <a className="font-insitutrial_bold underline" href={journal.url} target="_blank">En savoir plus</a>}
+                {journal.url && (
+                  <a
+                    className="font-insitutrial_bold underline"
+                    href={journal.url}
+                    target="_blank"
+                  >
+                    En savoir plus
+                  </a>
+                )}
                 <div className="flex gap-2 mt-2">
                   <button className="text-green" onClick={() => handleEdit(journal)}>
                     Modifier
@@ -209,8 +238,9 @@ export default function Journal() {
                   </button>
                 </div>
               </div>
-            )
-          )}
+            );
+          })}
+
           {!isAddingNew ? (
             <div
               onClick={() => setIsAddingNew(true)}
@@ -219,7 +249,7 @@ export default function Journal() {
               <p className="font-insitutrial_bold text-xl text-pink">Ajouter un article</p>
             </div>
           ) : (
-            renderForm()
+            <JournalForm key="new" {...journalFormProps} />
           )}
         </div>
       )}
