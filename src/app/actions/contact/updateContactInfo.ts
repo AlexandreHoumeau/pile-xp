@@ -22,6 +22,17 @@ export const updateContactInfo = async (
 
       const newPhotoUrl = await storeFiles([newPhoto], "contact_photo")
       photoUrl = newPhotoUrl[0]
+    } else if (photoUrl === "" && !newPhoto) {
+      // if the photo was removed
+      const { data: existingContactInfo } = await supabase
+        .from("contact_info")
+        .select("photo_url")
+        .neq("id", 0)
+        .single();
+
+      if (existingContactInfo?.photo_url) {
+        await deleteFiles([existingContactInfo?.photo_url])
+      }
     }
 
     const { faq, ...contactInfoWithoutFaq } = contact_info;
