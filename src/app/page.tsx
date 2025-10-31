@@ -64,16 +64,24 @@ const Home: React.FC = () => {
           <a
             key={project.id}
             href={`/projects/${project.slug}`}
-            className="transition-transform duration-300 hover:scale-105 z-0"
+            className="relative group w-full overflow-hidden transition-transform duration-300 hover:scale-105"
           >
             {project.photos && project.photos.length > 0 ? (
-              <div className="aspect-square w-full overflow-hidden z-0">
-                <img
-                  src={project.photos[0]}
-                  alt={project.title}
-                  className="w-full h-full object-cover z-0"
-                />
-              </div>
+              <>
+                <div className="aspect-square w-full overflow-hidden z-0">
+                  <img
+                    src={project.photos[0]}
+                    alt={project.title}
+                    className="w-full h-full object-cover z-0"
+                  />
+                </div>
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-pink bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-white font-insitutrial_bold text-lg text-center px-2">
+                    {project.title}
+                  </p>
+                </div>
+              </>
             ) : (
               <div className="aspect-square w-full bg-gray-200 flex items-center justify-center rounded text-gray-500">
                 No photo
