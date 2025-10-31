@@ -19,6 +19,7 @@ export type Inputs = {
   description: string
   pdf_url?: File | string | null;
   youtube_url?: string;
+  colaborators: string;
 };
 
 export type ProjectCard = {

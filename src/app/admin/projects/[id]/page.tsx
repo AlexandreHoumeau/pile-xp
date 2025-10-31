@@ -94,6 +94,6 @@ const projectToInputs = (project: Project): Inputs => ({
   budget: project.budget,
   pdf_url: project.pdf_url,
   youtube_url: project.youtube_url,
-
+  colaborators: project.colaborators,
   description: project.description,
 });

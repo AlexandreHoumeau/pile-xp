@@ -1,18 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { listProjects, listProjectsByTag } from "./actions/projects/list";
-import { Project } from "./actions/projects/type";
+import { listProjects, listProjectsByTag, listProjectsOverview } from "./actions/projects/list";
+import { Project, ProjectPreview } from "./actions/projects/type";
 import { getPublicUrl } from "@/utils/general";
 import { listTags } from "./actions/tag/list";
 import { capitalizeFirstLetter } from "@/utils/general";
 
 const Home: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectPreview[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>("");
 
   const fetchProjects = async (tag?: string) => {
-    const data = tag ? await listProjectsByTag(tag) : await listProjects();
+    const data = tag ? await listProjectsByTag(tag) : await listProjectsOverview();
     const refinedData = data?.map((project) => ({
       ...project,
       photos: getPublicUrl(project.photos),
@@ -76,10 +76,19 @@ const Home: React.FC = () => {
                   />
                 </div>
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-pink bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white font-insitutrial_bold text-lg text-center px-2">
+                <div className="absolute inset-0 bg-pink bg-opacity-50 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                  <div />
+                  <p className="text-white font-insitutrial_bold text-lg text-center">
                     {project.title}
                   </p>
+
+                  {/* Collaborators at bottom */}
+                  {project.colaborators ? (
+                    <p className="text-white font-insitutrial_bold text-base text-center">
+                      {project.colaborators}
+                    </p>
+                  ) : <div />
+                  }
                 </div>
               </>
             ) : (
