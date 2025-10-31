@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ConditionalPublicNavbar from "./ui/ConditionalPublicNavbar";
 import Footer from "./ui/footer";
-
+import { Analytics } from "@vercel/analytics/next"
 const insitutrialRegular = localFont({
   src: "./fonts/for-insitutrial-regular.otf",
   variable: "--font-insitutrial-regular",
@@ -39,6 +39,7 @@ export default function RootLayout({
           <ConditionalPublicNavbar />
           <main className="mb-auto min-h-screen">
             {children}
+            <Analytics />
           </main>
         </WithAuthenticationContext>
         <Footer />
