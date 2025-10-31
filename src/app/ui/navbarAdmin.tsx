@@ -2,9 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 
 const adminLinks = [
-    { name: 'Projects', path: '/admin/projects' },
+    { name: 'Projets', path: '/admin/projects' },
     { name: 'Journal', path: '/admin/journal' },
-    { name: 'About', path: '/admin/about' },
+    { name: "L'atelier", path: '/admin/about' },
     { name: 'Contact', path: '/admin/contact' },
 ];
 

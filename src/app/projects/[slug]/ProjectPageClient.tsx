@@ -81,7 +81,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 	return (
 		<div className="relative">
-			<div className="fixed lg:hidden bottom-5 z-50 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+			<div className="fixed lg:hidden bottom-5 z-10 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
 
 				<div className="bg-pink p-2 rounded-full" onClick={goToPrevious}>
 					<FiChevronLeft style={{ fontSize: 20 }} className="text-white" />
@@ -89,9 +89,9 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 				<div
 					onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
-					className=" shadow-2xl bg-pink p-2 px-8 rounded-full text-white text-xl  cursor-pointer transition-all duration-300"
+					className=" shadow-2xl bg-pink z-0 p-2 px-8 rounded-full text-white text-xl  cursor-pointer transition-all duration-300"
 				>
-					<p className="text-sm sm:text-base">{showPhotosButton ? "Photos" : "Infos"}</p>
+					<p className="text-sm sm:text-base z-0">{showPhotosButton ? "Photos" : "Infos"}</p>
 				</div>
 				<div className="bg-pink p-2 rounded-full" onClick={goToNext}>
 					<FiChevronRight style={{ fontSize: 20 }} className="text-white" />
@@ -122,10 +122,11 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 			</div>
 
 			{/* Info Section */}
-			<div ref={infoSectionRef} className="lg:grid lg:px-16 px-4 mx-auto grid-cols-1 lg:grid-cols-2 gap-8">
+			<div className="lg:grid lg:px-16 px-4 mx-auto grid-cols-1 lg:grid-cols-2 gap-8">
 				<div className="grid gap-8 order-last">
 					{project.blueprints?.map((bp, idx) => (
 						<div key={idx} className="aspect-square -z-10 overflow-hidden">
+							{idx === project.blueprints.length - 1 && (<div ref={infoSectionRef} />)}
 							<img
 								src={bp}
 								alt={`Blueprint ${idx + 1}`}
@@ -135,7 +136,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 					))}
 				</div>
 
-				<div className="lg:col-span-1 sticky top-0 z-0 self-start bg-white pt-4">
+				<div className="lg:col-span-1 sticky top-8 z-0 self-start bg-white pt-4">
 					<h1 className="bg-transparent text-pink text-5xl focus:outline-none font-insitutrial_bold hidden lg:block mb-8">
 						{project.title}
 					</h1>

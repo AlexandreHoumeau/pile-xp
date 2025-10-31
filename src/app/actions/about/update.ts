@@ -7,6 +7,7 @@ import { getPublicUrl } from "@/utils/general";
 
 export async function updateAboutInfo(
   aboutId: string,
+  footer_text: string | undefined,
   newSections: AboutSection[],
   newPhotos: (File | string)[],
 ) {
@@ -36,7 +37,7 @@ export async function updateAboutInfo(
 
   const { error: aboutError } = await supabase
     .from("about_info")
-    .update({ photos: finalPhotos })
+    .update({ photos: finalPhotos, footer_text })
     .eq("id", aboutId);
 
   if (aboutError) throw aboutError;

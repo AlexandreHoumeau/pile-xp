@@ -20,11 +20,13 @@ type FormValues = {
   id?: string;
   sections: Section[];
   photos: string[];
+  footer_text?: string;
 };
 
 export default function AboutAdminPage() {
   const { control, handleSubmit, reset, setValue } = useForm<FormValues>({
     defaultValues: {
+      footer_text: "",
       sections: [{ title: "", description: "" }],
       photos: ["", "", "", ""],
     },
@@ -57,6 +59,7 @@ export default function AboutAdminPage() {
 
       reset({
         id: data.id,
+        footer_text: data.footer_text || "",
         sections: data.sections.length ? data.sections : [{ title: "", description: "" }],
         photos: Array.isArray(data.photos)
           ? [...data.photos, "", "", "", ""].slice(0, 4)
@@ -72,15 +75,16 @@ export default function AboutAdminPage() {
       setLoading(true);
 
       const payload = {
+        footer_text: data.footer_text,
         sections: data.sections as AboutSection[],
         photos: data.photos.map((p, i) => newPhotos[i] || p),
       };
 
       if (data.id) {
-        await updateAboutInfo(data.id, payload.sections, payload.photos);
+        await updateAboutInfo(data.id, payload.footer_text, payload.sections, payload.photos);
         toast.success("À propos mis à jour !");
       } else {
-        await addAboutInfo(payload.sections, payload.photos);
+        await addAboutInfo(payload.footer_text, payload.sections, payload.photos);
         toast.success("À propos créé !");
       }
 
@@ -111,6 +115,20 @@ export default function AboutAdminPage() {
       <div className="flex justify-between gap-8 font-insitutrial">
         {/* LEFT: Sections */}
         <div className="w-full space-y-8">
+          <div>
+            <Controller
+              name="footer_text"
+              control={control}
+              render={({ field }) => (
+                <TextareaComponent
+                  {...field}
+                  label="Texte du footer (défilant)"
+                  placeholder="Entrez le texte du footer"
+                  required={false}
+                />
+              )}
+            />
+          </div>
           <h2 className="text-2xl">Sections</h2>
 
           {fields.map((field, index) => (

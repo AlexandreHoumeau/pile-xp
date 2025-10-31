@@ -11,6 +11,7 @@ export type AboutInfo = {
   id: string
   photos: string[]
   sections: AboutSection[]
+  footer_text?: string
 }
 
 export const getAboutInfo = async (): Promise<AboutInfo | null> => {
@@ -40,4 +41,18 @@ export const getAboutInfo = async (): Promise<AboutInfo | null> => {
     photos: about.photos ?? [],
     sections: sections ?? [],
   }
+}
+
+export const getFooterText = async (): Promise<string | null> => {
+  const { data, error: aboutError } = await supabase
+    .from("about_info")
+    .select("footer_text")
+    .single()
+
+  if (aboutError || !data) {
+    console.error("Error fetching about_info:", aboutError)
+    return null
+  }
+
+  return data.footer_text || null
 }

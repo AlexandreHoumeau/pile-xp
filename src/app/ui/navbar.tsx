@@ -13,20 +13,20 @@ export default function Navbar() {
 
   return (
     <div className="font-insitutrial z-50 sticky md:top-0 -top-[2.5em] md:block">
-      <div className="flex flex-wrap items-center text-2xs 2xl:text-xl lg:text-base">
-        <div className="pl-2 pr-2 xl:pr-5 hidden lg:block">
+      <div className="flex z-50 bg-white flex-wrap items-center text-2xs 2xl:text-xl lg:text-base">
+        <div className="pl-2 bg-white pr-2 lg:pr-[14px] hidden lg:block">
           <Image
             src="/mini_logo.png"
             alt="logo"
             width={40}
             height={18}
-            className="mt-2 xl:w-auto w-8"
+            className="mt-2 lg:w-auto w-8"
           />
         </div>
 
         <div className="flex-1 ">
           <div className="lg:grid grid-cols-4 text-white items-center bg-pink relative">
-            <div className="bg-zinc-400 flex justify-between lg:mr-10 py-2 md:px-10 px-4 xl:px-12 lg:text-center text-white">
+            <div className="bg-zinc-400 flex justify-between xl:mr-10 py-2 md:px-10 px-4 xl:px-12 lg:text-center text-white">
               <p>Agence d&apos;architecture</p>
             </div>
 
@@ -108,7 +108,7 @@ export default function Navbar() {
       {/* --- Bottom logo bar --- */}
       <div style={{ position: "sticky", top: "-3em"}}  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-8 md:px-12 lg:px-16">
         <div className="lg:col-span-3 md:col-span-2 col-span-1" />
-        <div className="bg-pink lg:p-4 px-2 py-2 lg:py-6 flex-1">
+        <div className="bg-pink lg:p-4 px-2 py-2 xl:py-6 flex-1">
           <div className="relative h-8 sm:h-10 md:h-12 lg:h-14 w-auto lg:mt-2">
             <Image
               src="/full_logo_white.svg"

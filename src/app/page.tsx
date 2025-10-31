@@ -59,19 +59,19 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-4 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8 md:px-4 lg:px-8">
         {projects.map((project) => (
           <a
             key={project.id}
             href={`/projects/${project.slug}`}
-            className="transition-transform duration-300 hover:scale-105 -z-10"
+            className="transition-transform duration-300 hover:scale-105 z-0"
           >
             {project.photos && project.photos.length > 0 ? (
-              <div className="aspect-square w-full overflow-hidden -z-10">
+              <div className="aspect-square w-full overflow-hidden z-0">
                 <img
                   src={project.photos[0]}
                   alt={project.title}
-                  className="w-full h-full object-cover -z-10"
+                  className="w-full h-full object-cover z-0"
                 />
               </div>
             ) : (
