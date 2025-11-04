@@ -1,10 +1,9 @@
 "use client";
+import { capitalizeFirstLetter, getPublicUrl } from "@/utils/general";
 import React, { useEffect, useState } from "react";
-import { listProjects, listProjectsByTag, listProjectsOverview } from "./actions/projects/list";
-import { Project, ProjectPreview } from "./actions/projects/type";
-import { getPublicUrl } from "@/utils/general";
+import { listProjectsByTag, listProjectsOverview } from "./actions/projects/list";
+import { ProjectPreview } from "./actions/projects/type";
 import { listTags } from "./actions/tag/list";
-import { capitalizeFirstLetter } from "@/utils/general";
 
 const Home: React.FC = () => {
   const [projects, setProjects] = useState<ProjectPreview[]>([]);
