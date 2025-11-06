@@ -38,6 +38,13 @@ const Home: React.FC = () => {
     await fetchProjects(tag || undefined);
   };
 
+  const isNewProject = (createdAt: string | Date) => {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const projectDate = new Date(createdAt);
+    return projectDate > oneMonthAgo;
+  };
+
   return (
     <main className="md:px-8 px-4 mt-4 font-insitutrial">
       <div className="md:grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-8 md:px-4 lg:px-8">
@@ -60,42 +67,54 @@ const Home: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8 md:px-4 lg:px-8">
         {projects.map((project) => (
-          <a
-            key={project.id}
-            href={`/projects/${project.slug}`}
-            className="relative group w-full overflow-hidden transition-transform duration-300 hover:scale-105"
-          >
-            {project.photos && project.photos.length > 0 ? (
-              <>
-                <div className="aspect-square w-full overflow-hidden z-0">
-                  <img
-                    src={project.photos[0]}
-                    alt={project.title}
-                    className="w-full h-full object-cover z-0"
-                  />
-                </div>
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-pink bg-opacity-50 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
-                  <div />
-                  <p className="text-white font-insitutrial_bold text-lg text-center">
-                    {project.title}
-                  </p>
+          <div key={project.id} className="relative">
+            <a
+              key={project.id}
+              href={`/projects/${project.slug}`}
+              className="group w-full overflow-hidden transition-transform duration-300 hover:scale-105 z-10"
+            >
+              {project.photos && project.photos.length > 0 ? (
+                <>
+                  <div className="aspect-square w-full overflow-hidden z-10">
+                    <img
+                      src={project.photos[0]}
+                      alt={project.title}
+                      className="w-full h-full object-cover z-10"
+                    />
+                  </div>
 
-                  {/* Collaborators at bottom */}
-                  {project.colaborators ? (
-                    <p className="text-white font-insitutrial_bold text-base text-center">
-                      {project.colaborators}
+                  {/* New badge */}
+                  {project.created_at && isNewProject(project.created_at) && (
+                    <img
+                      src="/new.svg"
+                      alt="New"
+                      className="absolute -top-5 sm:-top-10 md:-top-12 left-2 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 z-20 pointer-events-none"
+                    />
+                  )}
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-pink bg-opacity-50 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                    <div />
+                    <p className="text-white font-insitutrial_bold text-xl text-center">
+                      {project.title}
                     </p>
-                  ) : <div />
-                  }
+
+                    {/* Collaborators at bottom */}
+                    {project.colaborators ? (
+                      <p className="text-white font-insitutrial_bold text-base text-center">
+                        {project.colaborators}
+                      </p>
+                    ) : <div />
+                    }
+                  </div>
+                </>
+              ) : (
+                <div className="aspect-square w-full bg-gray-200 flex items-center justify-center rounded text-gray-500">
+                  No photo
                 </div>
-              </>
-            ) : (
-              <div className="aspect-square w-full bg-gray-200 flex items-center justify-center rounded text-gray-500">
-                No photo
-              </div>
-            )}
-          </a>
+              )}
+            </a>
+          </div>
         ))}
       </div>
     </main>
