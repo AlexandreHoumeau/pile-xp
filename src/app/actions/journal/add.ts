@@ -1,4 +1,6 @@
-import { supabase } from "@/utils/supabaseClient";
+ "use server";
+
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { storeFiles } from "../files";
 
 type NewJournal = {
@@ -17,7 +19,7 @@ export const addJournal = async ({
   try {
     const storedPhotoUrls = await storeFiles([photo], "journal_photos");
 
-    const { error } = await supabase.from("journal").insert([
+    const { error } = await supabaseAdmin.from("journal").insert([
       {
         title,
         description,

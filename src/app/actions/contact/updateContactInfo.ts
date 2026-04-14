@@ -1,4 +1,6 @@
-import { supabase } from "@/utils/supabaseClient"
+ "use server";
+
+import { supabaseAdmin } from "@/utils/supabaseAdmin"
 import { ContactInfo } from "./getContactInfo"
 import { updateFAQ } from "./updateFAQ"
 import { deleteFiles, storeFiles } from "../files";
@@ -24,7 +26,7 @@ export const updateContactInfo = async (
       photoUrl = newPhotoUrl[0]
     } else if (photoUrl === "" && !newPhoto) {
       // if the photo was removed
-      const { data: existingContactInfo } = await supabase
+      const { data: existingContactInfo } = await supabaseAdmin
         .from("contact_info")
         .select("photo_url")
         .neq("id", 0)
@@ -37,10 +39,10 @@ export const updateContactInfo = async (
 
     const { faq, ...contactInfoWithoutFaq } = contact_info;
 
-    await supabase.from("contact_info").delete().neq("id", 0);
+    await supabaseAdmin.from("contact_info").delete().neq("id", 0);
     await updateFAQ(faq);
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from("contact_info")
       .insert({ ...contactInfoWithoutFaq, photo_url: photoUrl });
 

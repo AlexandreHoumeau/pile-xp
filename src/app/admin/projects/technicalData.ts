@@ -6,6 +6,5 @@ export const technicalData = [
     { label: "Livraison", input_name: "delivery" },
     { label: "Surface", input_name: "surface" },
     { label: "Budget", input_name: "budget" },
-    { label: "Colab", input_name: "colaborators" },
   ];
   

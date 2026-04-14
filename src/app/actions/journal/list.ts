@@ -8,7 +8,7 @@ export const listJournals = async (): Promise<JournalEntry[] | null> => {
   return (
     data?.map((journal) => ({
       ...journal,
-      photo: getPublicUrl([journal.photo])[0],
+      photo: getPublicUrl([journal.photo])[0] ?? null,
     })) || null
   );
 };

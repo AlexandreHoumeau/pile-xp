@@ -3,14 +3,30 @@ import { supabase } from "@/utils/supabaseClient";
 import { supabaseAdmin } from "@/utils/supabaseAdmin"
 import { getFullPathPhoto } from "@/utils/general";
 
+const sanitizeFileName = (fileName: string) => {
+  const normalizedName = fileName.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+  const lastDotIndex = normalizedName.lastIndexOf(".");
+  const hasExtension = lastDotIndex > 0;
+  const rawBaseName = hasExtension ? normalizedName.slice(0, lastDotIndex) : normalizedName;
+  const rawExtension = hasExtension ? normalizedName.slice(lastDotIndex + 1) : "";
+
+  const baseName = rawBaseName
+    .replace(/[^A-Za-z0-9_-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "file";
+
+  const extension = rawExtension
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+
+  return extension ? `${baseName}.${extension}` : baseName;
+};
+
 export async function storeFiles(files: File[], folder: string) {
   const fileUrls = [];
 
   for (const file of files) {
-    const filePath = `${folder}/${crypto.randomUUID()}-${file.name
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\s+/g, "")}`;
+    const filePath = `${folder}/${crypto.randomUUID()}-${sanitizeFileName(file.name)}`;
 
     const { data, error } = await supabaseAdmin.storage
       .from("projects")

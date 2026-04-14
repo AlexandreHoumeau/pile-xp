@@ -1,5 +1,7 @@
+ "use server";
+
 import { Inputs } from "@/app/admin/projects/types";
-import { supabase } from "@/utils/supabaseClient";
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { storeFiles } from "../files";
 
 export async function saveDraft(
@@ -18,14 +20,16 @@ export async function saveDraft(
       storedNewPdfUrl = pdfUrl;
     }
 
+    const restFormData = { ...formData };
+    delete restFormData.colaborators;
     const projectData = {
-      ...formData,
+      ...restFormData,
       pdf_url: storedNewPdfUrl,
       photos: storedPhotoUrls,
       blueprints: storedBlueprintUrls,
     };
 
-    const { error } = await supabase.from("projects").insert([projectData]);
+    const { error } = await supabaseAdmin.from("projects").insert([projectData]);
 
     if (error) {
       throw error;

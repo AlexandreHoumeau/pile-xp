@@ -17,6 +17,8 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 	const router = useRouter()
 	const data = useProjectSlugs(slug as string);
 	const { previousSlug, nextSlug } = data || {};
+	const hasPhotos = Boolean(project.photos?.length);
+	const hasBlueprints = Boolean(project.blueprints?.length);
 
 	// Horizontal scroll for images
 	useEffect(() => {
@@ -70,11 +72,15 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 		);
 
 	const goToNext = () => {
-		router.push(`/projects/${previousSlug}`);
+		if (previousSlug) {
+			router.push(`/projects/${previousSlug}`);
+		}
 	}
 
 	const goToPrevious = () => {
-		window.location.href = `/projects/${nextSlug}`;
+		if (nextSlug) {
+			window.location.href = `/projects/${nextSlug}`;
+		}
 	}
 
 
@@ -110,21 +116,25 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 					ref={scrollRef}
 					className="lg:flex grid grid-cols-1 space-y-4 md:space-y-8 lg:space-y-0 no-scrollbar lg:overflow-x-auto lg:space-x-[27px] pb-2 lg:pl-[64px]"
 				>
-					{project.photos?.map((photo, idx) => (
+					{hasPhotos ? project.photos?.map((photo, idx) => (
 						<img
 							key={idx}
 							src={photo}
 							alt={`Project photo ${idx + 1}`}
 							className="lg:h-[535px] -z-10 object-cover"
 						/>
-					))}
+					)) : (
+						<div className="lg:h-[535px] aspect-square w-full border border-dashed border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-center">
+							<p className="font-insitutrial">Aucune photo disponible pour ce projet</p>
+						</div>
+					)}
 				</div>
 			</div>
 
 			{/* Info Section */}
 			<div className="lg:grid lg:px-16 px-4 mx-auto grid-cols-1 lg:grid-cols-2 gap-8">
 				<div className="grid gap-8 order-last">
-					{project.blueprints?.map((bp, idx) => (
+					{hasBlueprints ? project.blueprints?.map((bp, idx) => (
 						<div key={idx} className="aspect-square -z-10 overflow-hidden">
 							{idx === project.blueprints.length - 1 && (<div ref={infoSectionRef} />)}
 							<img
@@ -133,7 +143,12 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 								className="h-full w-full -z-10 object-cover"
 							/>
 						</div>
-					))}
+					)) : (
+						<div className="aspect-square border border-dashed border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-center">
+							<div ref={infoSectionRef} />
+							<p className="font-insitutrial">Aucun plan disponible</p>
+						</div>
+					)}
 				</div>
 
 				<div className="lg:col-span-1 sticky top-8 z-0 self-start bg-white pt-4">

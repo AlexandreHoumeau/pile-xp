@@ -1,3 +1,4 @@
+import { getPublicUrl } from "@/utils/general"
 import { supabase } from "@/utils/supabaseClient"
 
 export type AboutSection = {
@@ -18,10 +19,12 @@ export const getAboutInfo = async (): Promise<AboutInfo | null> => {
   const { data: about, error: aboutError } = await supabase
     .from("about_info")
     .select("*")
-    .single()
+    .maybeSingle()
 
   if (aboutError || !about) {
-    console.error("Error fetching about_info:", aboutError)
+    if (aboutError) {
+      console.error("Error fetching about_info:", aboutError)
+    }
     return null
   }
 
@@ -38,8 +41,9 @@ export const getAboutInfo = async (): Promise<AboutInfo | null> => {
 
   return {
     id: about.id,
-    photos: about.photos ?? [],
+    photos: getPublicUrl(about.photos ?? []),
     sections: sections ?? [],
+    footer_text: about.footer_text ?? undefined,
   }
 }
 
@@ -47,10 +51,12 @@ export const getFooterText = async (): Promise<string | null> => {
   const { data, error: aboutError } = await supabase
     .from("about_info")
     .select("footer_text")
-    .single()
+    .maybeSingle()
 
   if (aboutError || !data) {
-    console.error("Error fetching about_info:", aboutError)
+    if (aboutError) {
+      console.error("Error fetching about_info:", aboutError)
+    }
     return null
   }
 

@@ -1,10 +1,12 @@
-import { supabase } from "@/utils/supabaseClient";
+ "use server";
+
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { deleteFiles } from "../files";
 
 export async function deleteProjectById(id: string) {
   try {
     // Get project photos and blueprints
-    const { data: exisitingProject } = await supabase
+    const { data: exisitingProject } = await supabaseAdmin
       .from("projects")
       .select("photos, blueprints")
       .eq("id", id)
@@ -15,7 +17,7 @@ export async function deleteProjectById(id: string) {
     deleteFiles(exisitingProject?.blueprints);
 
     // Delete project
-    await supabase.from("projects").delete().eq("id", id);
+    await supabaseAdmin.from("projects").delete().eq("id", id);
   } catch (error) {
     throw error;
   }

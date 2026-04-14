@@ -5,28 +5,25 @@ import { getPublicUrl } from "@/utils/general";
 export const listProjects = async (): Promise<Project[] | null> => {
   const { data } = await supabase.from("projects").select();
 
-  if (data?.length) {
-    data.map((project) => ({
+  return (
+    data?.map((project) => ({
       ...project,
       photos: getPublicUrl(project.photos),
       blueprints: getPublicUrl(project.blueprints),
-    }));
-  }
-
-  return data;
+      pdf_url: project.pdf_url ? getPublicUrl([project.pdf_url])[0] : undefined,
+    })) || null
+  );
 };
 
 export const listProjectsOverview = async (): Promise<ProjectPreview[] | null> => {
-  const { data } = await supabase.from("projects").select("photos , title, created_at, id, slug, colaborators");
+  const { data } = await supabase.from("projects").select("photos, title, created_at, id, slug");
 
-  if (data?.length) {
-    data.map((project) => ({
+  return (
+    data?.map((project) => ({
       ...project,
-      photos: getPublicUrl([project.photos[0]]),
-    }));
-  }
-
-  return data;
+      photos: getPublicUrl(project.photos ?? []),
+    })) || null
+  );
 };
 
 
@@ -39,14 +36,12 @@ export const listProjectsBySlug = async (): Promise<string[] | []> => {
 
 //list by project tags
 export const listProjectsByTag = async (tag: string): Promise<ProjectPreview[] | null> => {
-  const { data } = await supabase.from("projects").select("photos , title, created_at, id, slug, colaborators").contains("program", [tag]);
+  const { data } = await supabase.from("projects").select("photos, title, created_at, id, slug").contains("program", [tag]);
 
-  if (data?.length) {
-    data.map((project) => ({
+  return (
+    data?.map((project) => ({
       ...project,
-      photos: getPublicUrl([project.photos[0]]),
-    }));
-  }
-
-  return data;
+      photos: getPublicUrl(project.photos ?? []),
+    })) || null
+  );
 }

@@ -17,8 +17,10 @@ export type Project = {
     updated_at: string;
     pdf_url?: string;
     youtube_url?: string;
-    colaborators: string;
+    colaborators?: string;
   };
   
 
-  export type ProjectPreview = Pick<Project, "id" | "title" | "slug" | "colaborators" | "created_at" | "photos">;
+  export type ProjectPreview = Pick<Project, "id" | "title" | "slug" | "created_at" | "photos"> & {
+    colaborators?: string;
+  };

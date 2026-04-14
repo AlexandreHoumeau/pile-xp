@@ -1,6 +1,6 @@
-"user server";
+"use server";
 
-import { supabase } from "@/utils/supabaseClient";
+import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { JournalEntry } from "./type";
 import { deleteFiles, storeFiles } from "../files";
 import { getFullPathPhoto } from "@/utils/general";
@@ -15,7 +15,7 @@ export async function updateJournalEntryById(
   data: UpdateJournalEntryData
 ): Promise<void> {
   try {
-    const { data: existingJournalEntry } = await supabase
+    const { data: existingJournalEntry } = await supabaseAdmin
       .from("journal")
       .select("*")
       .eq("id", id)
@@ -30,7 +30,7 @@ export async function updateJournalEntryById(
       }
     }
 
-    const { error } = await supabase.from("journal").update({ ...data, photo: getFullPathPhoto(data.photo! as string) }).eq("id", id);
+    const { error } = await supabaseAdmin.from("journal").update({ ...data, photo: getFullPathPhoto(data.photo! as string) }).eq("id", id);
 
     if (error) {
       throw error;

@@ -6,6 +6,7 @@ import { getPublicUrl } from "@/utils/general"
 
 export default async function ContactPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo()
+	const hasFaq = Boolean(contactInfo?.faq.length)
 
 	return (
 		<main className="px-4 sm:px-8 lg:px-16 py-8 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -22,9 +23,13 @@ export default async function ContactPage() {
 				{/* FAQ */}
 				<div className="space-y-4">
 					<h2 className="font-insitutrial_bold text-3xl sm:text-4xl">Vous avez une question ?</h2>
-					{contactInfo?.faq.map((faq, index) => (
+					{hasFaq ? contactInfo?.faq.map((faq, index) => (
 						<FAQItem key={index} question={faq.question} answer={faq.answer} />
-					))}
+					)) : (
+						<p className="font-insitutrial text-base sm:text-lg text-gray-500">
+							Aucune question frequente n&apos;est disponible pour le moment.
+						</p>
+					)}
 				</div>
 
 				{/* Contact Info */}
@@ -33,11 +38,11 @@ export default async function ContactPage() {
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
 						<div className="flex items-center underline gap-2">
 							<BsThreads className="text-2xl sm:text-3xl" />
-							<p className="font-insitutrial text-base sm:text-lg">{contactInfo?.email}</p>
+							<p className="font-insitutrial text-base sm:text-lg">{contactInfo?.email || "Email indisponible"}</p>
 						</div>
 						<div className="flex items-center gap-2">
 							<FaPhoneAlt className="text-xl sm:text-xl" />
-							<p className="font-insitutrial text-base sm:text-lg">{contactInfo?.phone_number}</p>
+							<p className="font-insitutrial text-base sm:text-lg">{contactInfo?.phone_number || "Telephone indisponible"}</p>
 						</div>
 					</div>
 				</div>
@@ -48,7 +53,7 @@ export default async function ContactPage() {
 			</div>
 
 			{/* Photo Section */}
-			{contactInfo?.photo_url && (
+			{contactInfo?.photo_url ? (
 				<div className="flex items-center justify-center mt-8 md:mt-0">
 					<div className="w-full max-w-md md:max-w-full aspect-square overflow-hidden shadow-sm">
 						<img
@@ -56,6 +61,12 @@ export default async function ContactPage() {
 							alt="Contact"
 							className="w-full h-full object-cover object-center"
 						/>
+					</div>
+				</div>
+			) : (
+				<div className="flex items-center justify-center mt-8 md:mt-0">
+					<div className="w-full max-w-md md:max-w-full aspect-square border border-dashed border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-center">
+						<p className="font-insitutrial">Aucune photo de contact disponible</p>
 					</div>
 				</div>
 			)}

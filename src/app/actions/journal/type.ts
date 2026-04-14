@@ -3,5 +3,5 @@ export type JournalEntry = {
     title: string;
     description: string;
     date: Date;
-    photo: File | string;
+    photo: File | string | null;
 }

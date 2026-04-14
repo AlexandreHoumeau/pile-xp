@@ -1,5 +1,5 @@
 "use client";
-import { capitalizeFirstLetter, getPublicUrl } from "@/utils/general";
+import { capitalizeFirstLetter } from "@/utils/general";
 import React, { useEffect, useState } from "react";
 import { listProjectsByTag, listProjectsOverview } from "./actions/projects/list";
 import { ProjectPreview } from "./actions/projects/type";
@@ -12,11 +12,7 @@ const Home: React.FC = () => {
 
   const fetchProjects = async (tag?: string) => {
     const data = tag ? await listProjectsByTag(tag) : await listProjectsOverview();
-    const refinedData = data?.map((project) => ({
-      ...project,
-      photos: getPublicUrl(project.photos),
-    }));
-    setProjects(refinedData || []);
+    setProjects(data || []);
   };
 
   useEffect(() => {
@@ -66,6 +62,14 @@ const Home: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8 md:px-4 lg:px-8">
+        {projects.length === 0 && (
+          <div className="md:col-span-3 lg:col-span-4 border border-gray-200 px-6 py-16 text-center text-gray-500">
+            <p className="font-insitutrial_bold text-xl text-pink">Aucun projet disponible</p>
+            <p className="mt-2 font-insitutrial">
+              Les projets sans media valide ont ete nettoyes. Ajoutez-en depuis l&apos;admin quand vous serez pret.
+            </p>
+          </div>
+        )}
         {projects.map((project) => (
           <div key={project.id} className="relative">
             <a
@@ -109,8 +113,11 @@ const Home: React.FC = () => {
                   </div>
                 </>
               ) : (
-                <div className="aspect-square w-full bg-gray-200 flex items-center justify-center rounded text-gray-500">
-                  No photo
+                <div className="aspect-square w-full border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-gray-500 flex items-center justify-center">
+                  <div>
+                    <p className="font-insitutrial_bold text-pink">{project.title}</p>
+                    <p className="mt-2 font-insitutrial text-sm">Aucune image disponible</p>
+                  </div>
                 </div>
               )}
             </a>

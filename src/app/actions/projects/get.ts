@@ -11,8 +11,8 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
     .single();
 
   if (data) {
-    data.photos = getPublicUrl(data.photos);
-    data.blueprints = getPublicUrl(data.blueprints);
+    data.photos = getPublicUrl(data.photos ?? []);
+    data.blueprints = getPublicUrl(data.blueprints ?? []);
     if (data.pdf_url) {
       data.pdf_url = getPublicUrl([data.pdf_url])[0];
     }
@@ -31,8 +31,8 @@ export const getProjectBySlug = async (slug: string): Promise<Project | null> =>
     .single();
 
   if (data) {
-    data.photos = getPublicUrl(data.photos);
-    data.blueprints = getPublicUrl(data.blueprints);
+    data.photos = getPublicUrl(data.photos ?? []);
+    data.blueprints = getPublicUrl(data.blueprints ?? []);
     if (data.pdf_url) {
       data.pdf_url = getPublicUrl([data.pdf_url])[0];
     }

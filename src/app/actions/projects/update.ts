@@ -72,8 +72,10 @@ export async function updateProject(
     await deleteFiles(deletedPhotoUrls);
     await deleteFiles(deletedBlueprintUrls);
 
+    const restFormData = { ...formData };
+    delete restFormData.colaborators;
     const projectData = {
-      ...formData,
+      ...restFormData,
       pdf_url: storedNewPdfUrl ? storedNewPdfUrl : formData.pdf_url === null ? null : data?.pdf_url,
       photos: newPhotosUrls,
       blueprints: newBlueprintUrls,
