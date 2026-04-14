@@ -17,7 +17,7 @@ import { JournalForm } from "./JournalForm";
 
 export type JournalInputs = {
   title: string;
-  photo: File | string;
+  photo: File | string | null;
   date: Date;
   url?: string;
   description: string;
@@ -25,7 +25,6 @@ export type JournalInputs = {
 
 interface Journal extends JournalInputs {
   id: string;
-  photo: string | File;
 }
 
 export default function Journal() {

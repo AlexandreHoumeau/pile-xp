@@ -29,7 +29,7 @@ export type FAQItem = {
 type FormValues = {
   description: string;
   id: string;
-  photo_url: string;
+  photo_url: string | null;
   email: string;
   phone_number: string;
   faq: FAQItem[];
@@ -41,7 +41,7 @@ export default function ContactPage() {
       description: "",
       email: "",
       phone_number: "",
-      photo_url: "",
+      photo_url: null,
       faq: [{ id: crypto.randomUUID(), question: "", answer: "" }],
     },
   });

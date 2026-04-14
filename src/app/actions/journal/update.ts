@@ -7,7 +7,7 @@ import { getFullPathPhoto } from "@/utils/general";
 
 
 type UpdateJournalEntryData = Partial<JournalEntry> & {
-  photo?: File | string;
+  photo?: File | string | null;
 };
 
 export async function updateJournalEntryById(
@@ -21,16 +21,24 @@ export async function updateJournalEntryById(
       .eq("id", id)
       .single();
 
-    if (typeof data.photo !== "string") {
-      await deleteFiles([existingJournalEntry?.photo]);
-      const storedPhotoUrls = await storeFiles([data.photo!], "journal_photos");
-      data = {
-        ...data,
-        photo: storedPhotoUrls[0]
-      }
+    if (!existingJournalEntry) {
+      throw new Error("Journal entry not found");
     }
 
-    const { error } = await supabaseAdmin.from("journal").update({ ...data, photo: getFullPathPhoto(data.photo! as string) }).eq("id", id);
+    let nextPhoto = existingJournalEntry.photo;
+
+    if (data.photo instanceof File) {
+      await deleteFiles([existingJournalEntry?.photo]);
+      const storedPhotoUrls = await storeFiles([data.photo!], "journal_photos");
+      nextPhoto = storedPhotoUrls[0];
+    } else if (typeof data.photo === "string") {
+      nextPhoto = getFullPathPhoto(data.photo);
+    }
+
+    const { error } = await supabaseAdmin
+      .from("journal")
+      .update({ ...data, photo: nextPhoto })
+      .eq("id", id);
 
     if (error) {
       throw error;

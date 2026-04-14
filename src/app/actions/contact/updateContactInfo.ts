@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/utils/supabaseAdmin"
 import { ContactInfo } from "./getContactInfo"
 import { updateFAQ } from "./updateFAQ"
 import { deleteFiles, storeFiles } from "../files";
+import { getFullPathPhoto } from "@/utils/general";
 
 export const updateContactInfo = async (
   contact_info: ContactInfo,
@@ -16,15 +17,12 @@ export const updateContactInfo = async (
     if (newPhoto) {
       // remove old photo
       if (photoUrl) {
-        const oldPath = photoUrl.split("/").pop();
-        if (oldPath) {
-          await deleteFiles([oldPath])
-        }
+        await deleteFiles([getFullPathPhoto(photoUrl)])
       }
 
       const newPhotoUrl = await storeFiles([newPhoto], "contact_photo")
       photoUrl = newPhotoUrl[0]
-    } else if (photoUrl === "" && !newPhoto) {
+    } else if (!photoUrl && !newPhoto) {
       // if the photo was removed
       const { data: existingContactInfo } = await supabaseAdmin
         .from("contact_info")

@@ -66,7 +66,7 @@ export async function updateProject(
     );
 
     const deletedBlueprintUrls = Array.from(existingBlueprintUrls).filter(
-      (url) => !newBlueprintUrls.includes(url)
+      (url) => !newBlueprintUrls.includes(getFullPathPhoto(url))
     );
 
     await deleteFiles(deletedPhotoUrls);

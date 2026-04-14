@@ -8,13 +8,16 @@ export async function deleteProjectById(id: string) {
     // Get project photos and blueprints
     const { data: exisitingProject } = await supabaseAdmin
       .from("projects")
-      .select("photos, blueprints")
+      .select("photos, blueprints, pdf_url")
       .eq("id", id)
       .single();
 
     // Delete project photos and blueprints
-    deleteFiles(exisitingProject?.photos);
-    deleteFiles(exisitingProject?.blueprints);
+    await deleteFiles(exisitingProject?.photos ?? []);
+    await deleteFiles(exisitingProject?.blueprints ?? []);
+    if (exisitingProject?.pdf_url) {
+      await deleteFiles([exisitingProject.pdf_url]);
+    }
 
     // Delete project
     await supabaseAdmin.from("projects").delete().eq("id", id);
