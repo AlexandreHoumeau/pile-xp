@@ -1,8 +1,11 @@
-import { ContactInfo, getContactInfo } from "@/app/actions/contact/getContactInfo"
+import { getContactInfo } from "@/app/actions/contact/getContactInfo"
+import type { ContactInfo } from "@/app/actions/contact/type"
 import { FAQItem } from "@/app/ui/FAQItem"
 import { BsThreads } from "react-icons/bs"
 import { FaPhoneAlt } from "react-icons/fa"
 import { getPublicUrl } from "@/utils/general"
+
+export const dynamic = "force-dynamic";
 
 export default async function ContactPage() {
 	const contactInfo: ContactInfo | null = await getContactInfo()

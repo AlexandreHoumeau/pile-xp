@@ -1,6 +1,6 @@
  "use server";
 
-import { FAQItem } from "@/app/admin/contact/page";
+import type { FAQItem } from "./type";
 import { supabaseAdmin } from "@/utils/supabaseAdmin";
 
 export const updateFAQ = async (newFAQs: FAQItem[]): Promise<void> => {

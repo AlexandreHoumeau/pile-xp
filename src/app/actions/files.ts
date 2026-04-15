@@ -45,15 +45,25 @@ export async function storeFiles(files: File[], folder: string) {
 }
 
 export async function deleteFiles(fileUrls: string[]) {
-  for (const fileUrl of fileUrls) {
-    const { error } = await supabaseAdmin.storage
-      .from("projects")
-      .remove([getFullPathPhoto(fileUrl)]);
+  const paths = Array.from(
+    new Set(
+      fileUrls
+        .map((fileUrl) => getFullPathPhoto(fileUrl))
+        .filter(Boolean)
+    )
+  );
 
-    if (error) {
-      console.error("Error deleting file:", error);
-      throw error;
-    }
+  if (paths.length === 0) {
+    return;
+  }
+
+  const { error } = await supabaseAdmin.storage
+    .from("projects")
+    .remove(paths);
+
+  if (error) {
+    console.error("Error deleting files:", error);
+    throw error;
   }
 }
 

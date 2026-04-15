@@ -106,7 +106,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 			</div>
 
-			<div className="lg:p0 md:px-12 px-4">
+			<div className="lg:px-16 md:px-12 px-4">
 				<div className="flex justify-between lg:flex md:text-5xl text-3xl text-pink lg:pl-16 pt-8 pb-4 lg:hidden">
 					<h1 className="font-insitutrial_bold">{project.title}</h1>
 					<p className="font-insitutrial">{project.delivery}</p>
@@ -114,7 +114,7 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 
 				<div
 					ref={scrollRef}
-					className="lg:flex grid grid-cols-1 space-y-4 md:space-y-8 lg:space-y-0 no-scrollbar lg:overflow-x-auto lg:space-x-[27px] pb-2 lg:pl-[64px]"
+					className="lg:flex grid grid-cols-1 space-y-4 md:space-y-8 lg:space-y-0 no-scrollbar lg:overflow-x-auto lg:space-x-[27px] pb-2"
 				>
 					{hasPhotos ? project.photos?.map((photo, idx) => (
 						<img

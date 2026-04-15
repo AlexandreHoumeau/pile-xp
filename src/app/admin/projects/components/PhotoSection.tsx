@@ -24,7 +24,7 @@ type PhotoSectionProps = {
   handleDeletePhoto: (id: string) => void;
   register: UseFormRegister<Inputs>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  photosInputRef: React.RefObject<HTMLInputElement>;
+  photosInputRef: React.RefObject<HTMLInputElement | null>;
   setSelectedPhotos: Dispatch<SetStateAction<PhotoItem[]>>;
 };
 

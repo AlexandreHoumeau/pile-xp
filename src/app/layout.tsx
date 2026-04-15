@@ -35,8 +35,14 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     type: "website",
   },
+  manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon0.svg", type: "image/svg+xml" },
+      { url: "/icon1.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
   },
 };
 
@@ -48,6 +54,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="PILE.XP" />
+      </head>
       <body
         className={`${insitutrialRegular.variable} ${insitutrialBold.variable} antialiased flex flex-col justify-between`}
       >

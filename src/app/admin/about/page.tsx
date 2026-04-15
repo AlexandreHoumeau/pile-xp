@@ -6,6 +6,7 @@ import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 import { InputComponent } from "@/components/Input";
 import TextareaComponent from "@/components/TextArea";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -24,6 +25,7 @@ type FormValues = {
 };
 
 export default function AboutAdminPage() {
+  const router = useRouter();
   const { control, handleSubmit, reset, setValue } = useForm<FormValues>({
     defaultValues: {
       footer_text: "",
@@ -46,9 +48,29 @@ export default function AboutAdminPage() {
     useRef<HTMLInputElement>(null),
   ];
 
+  const loadAboutInfo = async () => {
+    setLoading(true);
+    const data = await getAboutInfo();
+
+    if (!data) {
+      setLoading(false);
+      return;
+    }
+
+    reset({
+      id: data.id,
+      footer_text: data.footer_text || "",
+      sections: data.sections.length ? data.sections : [{ title: "", description: "" }],
+      photos: Array.isArray(data.photos)
+        ? [...data.photos, "", "", "", ""].slice(0, 4)
+        : ["", "", "", ""],
+    });
+    setLoading(false);
+  };
+
   // 🧠 Load data from Supabase
   useEffect(() => {
-    const loadAboutInfo = async () => {
+    const initializeAboutInfo = async () => {
       setLoading(true);
       const data = await getAboutInfo();
 
@@ -67,7 +89,8 @@ export default function AboutAdminPage() {
       });
       setLoading(false);
     };
-    loadAboutInfo();
+
+    initializeAboutInfo();
   }, [reset]);
 
   const onSubmit = async (data: FormValues) => {
@@ -89,6 +112,8 @@ export default function AboutAdminPage() {
       }
 
       setNewPhotos([null, null, null, null]);
+      await loadAboutInfo();
+      router.refresh();
     } catch (err) {
       console.error(err);
       toast.error("Échec de l’enregistrement");

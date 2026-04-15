@@ -14,14 +14,7 @@ import SkeletonCard from "@/components/loaders/SkeletonCard";
 import getCroppedImg from "@/utils/cropImage";
 import { MAX_FILE_SIZE } from "@/utils/general";
 import { JournalForm } from "./JournalForm";
-
-export type JournalInputs = {
-  title: string;
-  photo: File | string | null;
-  date: Date;
-  url?: string;
-  description: string;
-};
+import type { JournalInputs } from "./type";
 
 interface Journal extends JournalInputs {
   id: string;
@@ -33,12 +26,12 @@ export default function Journal() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [cropMode, setCropMode] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [cropSourceSrc, setCropSourceSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(2);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasNewPhoto, setHasNewPhoto] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,12 +72,36 @@ export default function Journal() {
     const img = new Image();
     img.onload = () => {
       setCroppedAreaPixels({ width: img.width, height: img.height, x: 0, y: 0 });
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
       setCropMode(true);
       setValue("photo", file);
       setImageSrc(imageUrl);
-      setHasNewPhoto(true);
+      setCropSourceSrc(imageUrl);
     };
     img.src = imageUrl;
+  };
+
+  const applyCrop = async () => {
+    if (!cropSourceSrc || !croppedAreaPixels) {
+      toast.error("No crop area selected");
+      return;
+    }
+
+    const croppedImage = await getCroppedImg(cropSourceSrc, croppedAreaPixels);
+
+    if (!croppedImage) {
+      throw new Error("No cropped image available");
+    }
+
+    const file = new File([croppedImage.blob], `${Date.now()}.jpg`, {
+      type: "image/jpeg",
+    });
+
+    setValue("photo", file, { shouldValidate: true });
+    setImageSrc(croppedImage.url);
+    setCropSourceSrc(croppedImage.url);
+    setCropMode(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -100,25 +117,16 @@ export default function Journal() {
   const submitForm = async () => {
     setIsSubmitting(true);
     try {
+      if (cropMode) {
+        throw new Error("Please finish cropping the image before saving");
+      }
+
       const values = getValues();
       const isEditing = Boolean(editJournalId);
       const payload = { ...values };
 
-      // Handle image only if new or adding
-      if ((!isEditing || hasNewPhoto) && imageSrc) {
-        const croppedBlob = await getCroppedImg(imageSrc, {
-          ...croppedAreaPixels!,
-          x: 0,
-          y: 0,
-        });
-
-        if (!croppedBlob) throw new Error("No cropped image available");
-
-        const file = new File([croppedBlob.blob], `${Date.now()}.jpg`, {
-          type: "image/jpeg",
-        });
-
-        payload.photo = file;
+      if (!isEditing && !(payload.photo instanceof File)) {
+        throw new Error("Please select and crop an image");
       }
 
       if (isEditing) {
@@ -148,8 +156,11 @@ export default function Journal() {
     setEditJournalId(null);
     setIsAddingNew(false);
     setImageSrc(null);
+    setCropSourceSrc(null);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCropMode(false);
     setCroppedAreaPixels(null);
-    setHasNewPhoto(false);
     reset();
   };
 
@@ -168,11 +179,15 @@ export default function Journal() {
     setValue("date", journal.date);
     setValue("photo", journal.photo);
     setImageSrc(journal.photo as string);
-    setHasNewPhoto(false);
+    setCropSourceSrc(journal.photo as string);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCropMode(false);
   };
 
   const journalFormProps = {
     imageSrc,
+    cropSourceSrc,
     crop,
     zoom,
     cropMode,
@@ -180,11 +195,11 @@ export default function Journal() {
     setCrop,
     setZoom,
     setCropMode,
-    setImageSrc,
     croppedAreaPixels,
     setCroppedAreaPixels,
     photoInputRef,
     handleFileChange,
+    applyCrop,
     register,
     handleSubmit,
     onSubmit: submitForm,

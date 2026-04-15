@@ -5,8 +5,8 @@ import { RiUploadLine } from "react-icons/ri";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 type UploadButtonsProps = {
-  photosInputRef: React.RefObject<HTMLInputElement>;
-  bluePrintsInputRef: React.RefObject<HTMLInputElement>;
+  photosInputRef: React.RefObject<HTMLInputElement | null>;
+  bluePrintsInputRef: React.RefObject<HTMLInputElement | null>;
   onDelete: () => void;
   isValid: boolean;
   isEdit?: boolean;

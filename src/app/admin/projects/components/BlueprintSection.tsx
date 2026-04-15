@@ -7,7 +7,7 @@ type BlueprintSectionProps = {
   selectedBluePrints: PhotoItem[];
   register: UseFormRegister<Inputs>;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  bluePrintsInputRef: React.RefObject<HTMLInputElement>;
+  bluePrintsInputRef: React.RefObject<HTMLInputElement | null>;
   handleDeletePhoto: (id: string, type?: string) => void;
 };
 

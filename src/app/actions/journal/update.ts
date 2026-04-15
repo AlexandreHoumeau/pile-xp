@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { JournalEntry } from "./type";
 import { deleteFiles, storeFiles } from "../files";
@@ -28,8 +29,7 @@ export async function updateJournalEntryById(
     let nextPhoto = existingJournalEntry.photo;
 
     if (data.photo instanceof File) {
-      await deleteFiles([existingJournalEntry?.photo]);
-      const storedPhotoUrls = await storeFiles([data.photo!], "journal_photos");
+      const storedPhotoUrls = await storeFiles([data.photo], "journal_photos");
       nextPhoto = storedPhotoUrls[0];
     } else if (typeof data.photo === "string") {
       nextPhoto = getFullPathPhoto(data.photo);
@@ -43,6 +43,18 @@ export async function updateJournalEntryById(
     if (error) {
       throw error;
     }
+
+    if (
+      data.photo instanceof File &&
+      existingJournalEntry.photo &&
+      nextPhoto &&
+      existingJournalEntry.photo !== nextPhoto
+    ) {
+      await deleteFiles([existingJournalEntry.photo]);
+    }
+
+    revalidatePath("/journal");
+    revalidatePath("/admin/journal");
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;

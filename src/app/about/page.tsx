@@ -1,5 +1,7 @@
 import { AboutInfo, getAboutInfo } from "../actions/about/get";
 
+export const dynamic = "force-dynamic";
+
 export default async function AboutPage() {
 	const aboutInfo: AboutInfo | null = await getAboutInfo();
 	const hasSections = Boolean(aboutInfo?.sections.length);

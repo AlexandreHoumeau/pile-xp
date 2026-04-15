@@ -1,9 +1,22 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { supabaseAdmin as supabase } from "@/utils/supabaseAdmin"
 import { AboutSection } from "./get";
 import { deleteFiles, storeFiles } from "../files";
 import { getPublicUrl } from "@/utils/general";
+
+const isMissingFooterTextColumnError = (
+  error: { code?: string; message?: string } | null,
+) => {
+  const message = error?.message ?? "";
+
+  return (
+    error?.code === "PGRST204" ||
+    message.includes("about_info.footer_text does not exist") ||
+    message.includes("Could not find the 'footer_text' column of 'about_info'")
+  );
+};
 
 export async function updateAboutInfo(
   aboutId: string,
@@ -35,10 +48,19 @@ export async function updateAboutInfo(
 
   const finalPhotos = [...keptUrls, ...uploadedUrls].filter(Boolean);
 
-  const { error: aboutError } = await supabase
+  let { error: aboutError } = await supabase
     .from("about_info")
     .update({ photos: finalPhotos, footer_text })
     .eq("id", aboutId);
+
+  if (isMissingFooterTextColumnError(aboutError)) {
+    const fallbackResult = await supabase
+      .from("about_info")
+      .update({ photos: finalPhotos })
+      .eq("id", aboutId);
+
+    aboutError = fallbackResult.error;
+  }
 
   if (aboutError) throw aboutError;
 
@@ -60,6 +82,10 @@ export async function updateAboutInfo(
 
     if (insertError) throw insertError;
   }
+
+  revalidatePath("/", "layout");
+  revalidatePath("/about");
+  revalidatePath("/admin/about");
 
   return { success: true, photos: finalPhotos };
 }

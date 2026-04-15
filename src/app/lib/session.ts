@@ -58,13 +58,19 @@ export async function encrypt(payload: Record<string, unknown>) {
 }
 
 export async function decrypt(session: string | undefined = "") {
+  if (!session || session.split(".").length !== 3) {
+    return null;
+  }
+
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
     return payload;
   } catch (error) {
-    console.error("Failed to verify session:", error);
+    if (!(error && typeof error === "object" && "code" in error && error.code === "ERR_JWS_INVALID")) {
+      console.error("Failed to verify session:", error);
+    }
     return null;
   }
 }

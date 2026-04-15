@@ -26,6 +26,7 @@ export async function updateProject(
     const storedPhotoUrls = await storeFiles(newPhotos, "photos");
     const storedBluePrintUrls = await storeFiles(newBlueprints, "blueprints");
     let storedNewPdfUrl: string | null = null;
+    const existingPdfUrl = data?.pdf_url ?? null;
 
 
     if (formData.pdf_url && formData.pdf_url instanceof File) {
@@ -76,7 +77,7 @@ export async function updateProject(
     delete restFormData.colaborators;
     const projectData = {
       ...restFormData,
-      pdf_url: storedNewPdfUrl ? storedNewPdfUrl : formData.pdf_url === null ? null : data?.pdf_url,
+      pdf_url: storedNewPdfUrl ? storedNewPdfUrl : formData.pdf_url === null ? null : existingPdfUrl,
       photos: newPhotosUrls,
       blueprints: newBlueprintUrls,
     };
@@ -88,6 +89,10 @@ export async function updateProject(
 
     if (error) {
       throw error;
+    }
+
+    if (storedNewPdfUrl && existingPdfUrl && storedNewPdfUrl !== existingPdfUrl) {
+      await deleteFiles([existingPdfUrl]);
     }
 
     await syncTags();

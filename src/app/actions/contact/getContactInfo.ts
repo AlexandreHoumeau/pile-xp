@@ -1,16 +1,9 @@
-import { FAQItem } from "@/app/admin/contact/page";
+"use server";
+
 import { listFAQ } from "./listFAQ";
+import type { ContactInfo } from "./type";
 import { supabase } from "@/utils/supabaseClient";
 import { normalizeStoragePath } from "@/utils/general";
-
-export type ContactInfo = {
-	id: string;
-	description: string;
-	email: string;
-	phone_number: string;
-	photo_url: string | null;
-	faq: FAQItem[]
-}
 
 export const getContactInfo = async (): Promise<ContactInfo | null> => {
 	const faq = await listFAQ()

@@ -1,7 +1,7 @@
  "use server";
 
 import { supabaseAdmin } from "@/utils/supabaseAdmin"
-import { ContactInfo } from "./getContactInfo"
+import type { ContactInfo } from "./type"
 import { updateFAQ } from "./updateFAQ"
 import { deleteFiles, storeFiles } from "../files";
 import { getFullPathPhoto } from "@/utils/general";
@@ -12,12 +12,12 @@ export const updateContactInfo = async (
 ): Promise<void> => {
   try {
     let photoUrl = contact_info.photo_url;
+    let previousPhotoUrl: string | null = null;
 
     // if a new photo was selected
     if (newPhoto) {
-      // remove old photo
       if (photoUrl) {
-        await deleteFiles([getFullPathPhoto(photoUrl)])
+        previousPhotoUrl = getFullPathPhoto(photoUrl);
       }
 
       const newPhotoUrl = await storeFiles([newPhoto], "contact_photo")
@@ -45,6 +45,10 @@ export const updateContactInfo = async (
       .insert({ ...contactInfoWithoutFaq, photo_url: photoUrl });
 
     if (error) throw error;
+
+    if (previousPhotoUrl && previousPhotoUrl !== photoUrl) {
+      await deleteFiles([previousPhotoUrl]);
+    }
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error(error.message);

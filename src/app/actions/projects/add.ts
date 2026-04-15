@@ -3,6 +3,7 @@
 import { Inputs } from "@/app/admin/projects/types";
 import { supabaseAdmin } from "@/utils/supabaseAdmin";
 import { storeFiles } from "../files";
+import { syncTags } from "../tag/SyncTags";
 
 export async function saveDraft(
   formData: Inputs,
@@ -34,6 +35,8 @@ export async function saveDraft(
     if (error) {
       throw error;
     }
+
+    await syncTags();
 
     return projectData;
   } catch (error) {

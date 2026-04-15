@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { FaRegSave } from "react-icons/fa";
 
 import { getContactInfo } from "@/app/actions/contact/getContactInfo";
+import type { FAQItem } from "@/app/actions/contact/type";
 import { updateContactInfo } from "@/app/actions/contact/updateContactInfo";
 import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 import SortableItem from "@/components/admin/SortableItem";
@@ -19,12 +20,6 @@ import { InputComponent } from "@/components/Input";
 import TextareaComponent from "@/components/TextArea";
 import Image from "next/image";
 import { getPublicUrl } from "@/utils/general";
-
-export type FAQItem = {
-  id: string;
-  question: string;
-  answer: string;
-};
 
 type FormValues = {
   description: string;

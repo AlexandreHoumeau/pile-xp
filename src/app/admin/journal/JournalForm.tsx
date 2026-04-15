@@ -1,9 +1,9 @@
-import getCroppedImg from "@/utils/cropImage";
 import Cropper from "react-easy-crop";
 import { JournalFormProps } from "./type";
 
 export function JournalForm({
   imageSrc,
+  cropSourceSrc,
   crop,
   zoom,
   cropMode,
@@ -11,11 +11,10 @@ export function JournalForm({
   setCrop,
   setZoom,
   setCropMode,
-  setImageSrc,
-  croppedAreaPixels,
   setCroppedAreaPixels,
   photoInputRef,
   handleFileChange,
+  applyCrop,
   register,
   handleSubmit,
   onSubmit,
@@ -30,12 +29,12 @@ export function JournalForm({
       onSubmit={handleSubmit(onSubmit)}
       className="min-h-[481px]"
     >
-      <div className="relative w-full min-h-[481px] bg-red-200">
-        {imageSrc && cropMode ? (
+      <div className="relative w-full min-h-[481px]">
+        {cropSourceSrc && cropMode ? (
           <div className="w-full h-[481px] relative">
             <Cropper
               objectFit="vertical-cover"
-              image={imageSrc}
+              image={cropSourceSrc}
               crop={crop}
               zoom={zoom}
               aspect={1}
@@ -45,11 +44,7 @@ export function JournalForm({
             />
             <button
               type="button"
-              onClick={async () => {
-                setCropMode(false);
-                const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels!);
-                setImageSrc(croppedImage?.url || null);
-              }}
+              onClick={applyCrop}
               className="absolute bottom-2 right-2 bg-pink text-white px-3 py-1"
             >
               Done
@@ -57,14 +52,10 @@ export function JournalForm({
           </div>
         ) : imageSrc ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img alt="Preview" src={imageSrc} className="object-cover object-center w-full" />
             <button
               type="button"
               onClick={() => {
-                const img = new Image();
-                img.src = imageSrc
-                setCroppedAreaPixels({ width: img.width, height: img.height, x: 0, y: 0 })
                 setCropMode(true)
               }}
               className="absolute bottom-2 right-2 bg-pink text-white px-3 py-1"

@@ -2,6 +2,8 @@ import { listJournals } from '@/app/actions/journal/list'
 import { JournalEntry } from '@/app/actions/journal/type'
 import dayjs from 'dayjs'
 
+export const dynamic = "force-dynamic";
+
 export default async function JournalPage() {
 	const journalEntries: JournalEntry[] = (await listJournals()) || []
 
