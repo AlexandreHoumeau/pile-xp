@@ -4,6 +4,7 @@ export type Project = {
     blueprints: string[];
     budget: string;
     created_at: string;
+    display_order: number;
     delivery: string;
     description: string;
     id: string;

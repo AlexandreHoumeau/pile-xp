@@ -5,12 +5,14 @@ type ProjectCardProps = {
   project: Project;
   onDelete?: (project: Project) => void;
   isDeleting?: boolean;
+  disabled?: boolean;
 };
 
 export default function ProjectCard({
   project,
   onDelete,
   isDeleting = false,
+  disabled = false,
 }: ProjectCardProps) {
   const coverPhoto = project.photos?.[0];
 
@@ -36,7 +38,7 @@ export default function ProjectCard({
         <button
           type="button"
           onClick={() => onDelete?.(project)}
-          disabled={isDeleting}
+          disabled={disabled || isDeleting}
           className="shrink-0 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm font-insitutrial_bold text-red-500 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isDeleting ? "Suppression..." : "Supprimer"}

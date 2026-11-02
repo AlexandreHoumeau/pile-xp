@@ -3,10 +3,13 @@ import { Project, ProjectPreview } from "./type";
 import { getPublicUrl } from "@/utils/general";
 
 export const listProjects = async (): Promise<Project[] | null> => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("projects")
     .select()
-    .order("created_at", { ascending: false });
+    .order("display_order", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (error) throw new Error("Impossible de charger les projets. Vérifiez la migration display_order.");
 
   return (
     data?.map((project) => ({
@@ -19,10 +22,13 @@ export const listProjects = async (): Promise<Project[] | null> => {
 };
 
 export const listProjectsOverview = async (): Promise<ProjectPreview[] | null> => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("projects")
-    .select("photos, title, created_at, id, slug")
-    .order("created_at", { ascending: false });
+    .select("photos, title, created_at, id, slug, display_order")
+    .order("display_order", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (error) throw new Error("Impossible de charger les projets. Vérifiez la migration display_order.");
 
   return (
     data?.map((project) => ({
@@ -34,10 +40,13 @@ export const listProjectsOverview = async (): Promise<ProjectPreview[] | null> =
 
 
 export const listProjectsBySlug = async (): Promise<string[] | []> => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("projects")
     .select("slug")
-    .order("created_at", { ascending: false });
+    .order("display_order", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (error) throw new Error("Impossible de charger la navigation des projets.");
 
   return data?.map(data => data.slug) || [];
 };
@@ -45,11 +54,14 @@ export const listProjectsBySlug = async (): Promise<string[] | []> => {
 
 //list by project tags
 export const listProjectsByTag = async (tag: string): Promise<ProjectPreview[] | null> => {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("projects")
-    .select("photos, title, created_at, id, slug")
+    .select("photos, title, created_at, id, slug, display_order")
     .contains("program", [tag])
-    .order("created_at", { ascending: false });
+    .order("display_order", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (error) throw new Error("Impossible de charger les projets. Vérifiez la migration display_order.");
 
   return (
     data?.map((project) => ({

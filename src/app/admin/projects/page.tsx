@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { deleteProjectById } from "@/app/actions/projects/delete";
 import { listProjects } from "@/app/actions/projects/list";
@@ -8,7 +8,10 @@ import Modal from "@/components/Modal";
 import { AdminIconButton } from "@/components/admin/button/AdminIconButton";
 import { useRouter } from "next/navigation";
 import { IoAddCircleOutline } from "react-icons/io5";
-import ProjectCard from "./components/ProjectCard";
+import SortableProjectCard from "./components/SortableProjectCard";
+import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
+import { reorderProjects } from "@/app/actions/projects/reorder";
 import toast from "react-hot-toast";
 
 export default function Projects() {
@@ -16,18 +19,59 @@ export default function Projects() {
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
   const [projectPendingDelete, setProjectPendingDelete] = useState<Project | null>(null);
   const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const saving = useRef(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const getProjects = async () => {
-    const data = await listProjects();
-    setProjects(data ?? []);
+    setIsLoading(true);
+    try {
+      const data = await listProjects();
+      setProjects(data ?? []);
+      setLoadError(false);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     getProjects();
   }, []);
 
+  const handleDragEnd = async ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id || saving.current || deletingProjectId || loadError) return;
+    const oldIndex = projects.findIndex((project) => project.id === active.id);
+    const newIndex = projects.findIndex((project) => project.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const previous = projects;
+    const reordered = arrayMove(projects, oldIndex, newIndex);
+    saving.current = true;
+    setIsSaving(true);
+    setProjects(reordered);
+    try {
+      const result = await reorderProjects(reordered.map((p) => String(p.id)), previous.map((p) => String(p.id)));
+      if (result.error) throw new Error(result.error);
+      toast.success("Ordre des projets enregistré.");
+    } catch (error) {
+      setProjects(previous);
+      toast.error(error instanceof Error ? error.message : "Impossible d’enregistrer l’ordre.");
+      // Reconcile even if the response was lost after the transaction committed.
+      await getProjects();
+    } finally {
+      saving.current = false;
+      setIsSaving(false);
+    }
+  };
+
   const confirmDelete = (project: Project) => {
-    setProjectPendingDelete(project);
+    if (!saving.current) setProjectPendingDelete(project);
   };
 
   const handleDelete = (project: Project) => {
@@ -61,16 +105,23 @@ export default function Projects() {
           icon={<IoAddCircleOutline size={30} className="mb-2" />}
         />
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <p className="mb-4 text-sm" role="status">{isSaving ? "Enregistrement de l’ordre…" : "Déplacez les projets avec la poignée (ou Espace puis les flèches au clavier)."}</p>
+      {loadError && <p role="alert" className="mb-4 text-red-600">Impossible de charger les projets pour le moment. <button onClick={getProjects} className="underline">Réessayer</button></p>}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={projects.map((p) => p.id)} strategy={rectSortingStrategy}>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2" aria-busy={isSaving || isLoading}>
         {projects.map((project) => (
-          <ProjectCard
+          <SortableProjectCard
             key={project.id}
             project={project}
+            disabled={isSaving || isLoading || loadError || Boolean(deletingProjectId) || Boolean(projectPendingDelete)}
             onDelete={confirmDelete}
             isDeleting={deletingProjectId === project.id}
           />
         ))}
       </div>
+      </SortableContext>
+      </DndContext>
       <Modal
         isOpen={Boolean(projectPendingDelete)}
         onClose={() => {

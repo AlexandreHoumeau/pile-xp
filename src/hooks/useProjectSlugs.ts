@@ -22,7 +22,7 @@ export function useProjectSlugs(currentSlug: string) {
 				currentIndex < slugs.length - 1 ? slugs[currentIndex + 1] : slugs[0];
 			setData({ slugs, currentIndex, previousSlug, nextSlug });
 		};
-		fetch();
+		fetch().catch(() => setData(undefined));
 	}, [currentSlug]);
 
 	return data;

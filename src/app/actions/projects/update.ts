@@ -75,6 +75,8 @@ export async function updateProject(
 
     const restFormData = { ...formData };
     delete restFormData.colaborators;
+    // Order is assigned by the database / dedicated authenticated reorder action.
+    delete (restFormData as Inputs & { display_order?: unknown }).display_order;
     const projectData = {
       ...restFormData,
       pdf_url: storedNewPdfUrl ? storedNewPdfUrl : formData.pdf_url === null ? null : existingPdfUrl,

@@ -23,7 +23,7 @@ export default function Navbar() {
   return (
     <div className="font-insitutrial z-50 sticky md:top-0 -top-[2.5em] md:block">
       <div className="flex z-50 bg-white flex-wrap items-center text-2xs 2xl:text-xl lg:text-base">
-        <div className="pl-2 bg-white pr-2 lg:pr-[14px] hidden lg:block">
+        <Link href="/contact" aria-label="Contacter PILE.XP" className="pl-2 bg-zinc-400 pr-2 lg:pr-[14px] hidden lg:block">
           <Image
             src="/mini_logo.png"
             alt="logo"
@@ -31,9 +31,9 @@ export default function Navbar() {
             height={18}
             className=" lg:w-auto w-8"
           />
-        </div>
+        </Link>
 
-        <div className="flex-1 ">
+        <div className="flex-1 min-w-0">
           <div className="lg:grid grid-cols-4 text-white items-center bg-pink relative">
             <div className="bg-zinc-400 flex justify-start gap-4 px-2 xl:mr-10 py-1 lg:text-center text-white">
 
@@ -48,7 +48,9 @@ export default function Navbar() {
               <button
                 onClick={toggleMenu}
                 className="bg-pink flex justify-between z-50 items-center py-2 md:px-12 px-4 xl:px-12 text-white w-full"
-                aria-label="Toggle menu"
+                aria-label="Ouvrir le menu"
+                aria-expanded={isMenuOpen}
+                aria-controls="public-mobile-menu"
               >
                 <IoIosMenu className="text-white text-3xl sm:text-4xl md:text-4xl" />
               </button>
@@ -68,6 +70,9 @@ export default function Navbar() {
 
       {/* --- Mobile menu overlay --- */}
       <div
+        id="public-mobile-menu"
+        inert={!isMenuOpen}
+        aria-hidden={!isMenuOpen}
         className={`fixed inset-0 bg-pink z-[100] lg:hidden transition-all duration-300 ease-in-out ${isMenuOpen
           ? "opacity-100 translate-y-0"
           : "opacity-0 -translate-y-full pointer-events-none"
@@ -78,7 +83,7 @@ export default function Navbar() {
             <button
               onClick={closeMenu}
               className="text-white"
-              aria-label="Close menu"
+              aria-label="Fermer le menu"
             >
               <IoMdClose className="text-4xl sm:text-5xl md:text-6xl" />
             </button>
@@ -122,17 +127,21 @@ export default function Navbar() {
       </div>
 
       {/* --- Bottom logo bar --- */}
-      <div style={{ position: "sticky", top: "-3em" }} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-8 md:px-12 lg:px-16">
-        <div className="lg:col-span-3 md:col-span-2 col-span-1" />
-        <div className="bg-pink lg:p-4 px-2 py-2 xl:py-6 flex-1">
-          <div className="relative h-8 sm:h-10 md:h-12 lg:h-14 w-auto lg:mt-2">
+      <div style={{ position: "sticky", top: "-3em" }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-8 md:pl-12 lg:pl-16">
+        <div className="hidden sm:block lg:col-span-3 md:col-span-2 col-span-1" />
+        <div className="bg-pink flex min-w-0 items-center gap-2 px-2 py-3 lg:px-4 xl:py-6">
+          <Link href="/" aria-label="PILE.XP — Projets" onClick={closeMenu}
+            className="relative block min-w-0 flex-1 h-8 sm:h-10 md:h-12 lg:h-14">
             <Image
               src="/full_logo_white.svg"
-              alt="logo"
+              alt="PILE.XP"
               fill
-              className="object-contain"
+              className="object-contain object-left"
             />
-          </div>
+          </Link>
+          <p className="w-[52%] shrink-0 font-insitutrial text-white text-[11px] sm:text-[10px] xl:text-xs leading-tight">
+            Inscrits à l’ordre des architectes<br />S24987
+          </p>
         </div>
       </div>
     </div>

@@ -98,16 +98,12 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 		);
 
 	const goToNext = () => {
-		if (previousSlug) {
-			router.push(`/projects/${previousSlug}`);
-		}
-	}
+		if (nextSlug) router.push(`/projects/${nextSlug}`);
+	};
 
 	const goToPrevious = () => {
-		if (nextSlug) {
-			window.location.href = `/projects/${nextSlug}`;
-		}
-	}
+		if (previousSlug) router.push(`/projects/${previousSlug}`);
+	};
 
 
 
@@ -115,9 +111,9 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 		<div className="relative">
 			<div className="fixed lg:hidden bottom-5 z-10 gap-4 flex items-center left-1/2 transform -translate-x-1/2 -translate-y-1/2">
 
-				<div className="bg-pink p-2 rounded-full" onClick={goToPrevious}>
+				<button type="button" aria-label="Projet précédent" disabled={!previousSlug} className="bg-pink p-2 rounded-full" onClick={goToPrevious}>
 					<FiChevronLeft style={{ fontSize: 20 }} className="text-white" />
-				</div>
+				</button>
 
 				<div
 					onClick={showPhotosButton ? scrollToPhotos : scrollToInfos}
@@ -125,9 +121,9 @@ export default function ProjectPageClient({ project }: { project: Project }) {
 				>
 					<p className="text-sm sm:text-base z-0">{showPhotosButton ? "Photos" : "Infos"}</p>
 				</div>
-				<div className="bg-pink p-2 rounded-full" onClick={goToNext}>
+				<button type="button" aria-label="Projet suivant" disabled={!nextSlug} className="bg-pink p-2 rounded-full" onClick={goToNext}>
 					<FiChevronRight style={{ fontSize: 20 }} className="text-white" />
-				</div>
+				</button>
 
 
 			</div>
