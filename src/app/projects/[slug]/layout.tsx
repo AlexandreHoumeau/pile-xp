@@ -31,7 +31,7 @@ export default function ProjectLayout({
 				<div onClick={goToPrecedent} className="cursor-pointer hover:text-pink transition" >
 					<div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
 						<FiChevronLeft style={{ fontSize: 20 }} />
-						<p>Precedent</p>
+						<p>Précédent</p>
 					</div>
 				</div>
 				<div onClick={goToSuivant} className="cursor-pointer hover:text-pink transition" >

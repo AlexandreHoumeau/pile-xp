@@ -8,7 +8,7 @@ export default async function AboutPage() {
 	const hasPhotos = Boolean(aboutInfo?.photos.length);
 
 	return (
-		<main className="px-4 sm:px-8 lg:px-16 py-8 min-h-screen md:grid md:grid-cols-2 gap-16">
+		<main className="px-4 sm:px-8 lg:px-16 py-8 min-h-screen md:grid md:grid-cols-4 gap-8">
 			<div className="w-full flex flex-col space-y-8">
 				{hasSections ? aboutInfo?.sections.map((section, index) => (
 					<div key={section.id}>
@@ -45,8 +45,8 @@ export default async function AboutPage() {
 					</div>
 				)}
 			</div>
-			<div className="hidden md:flex flex-col items-start md:items-end space-y-4 w-full">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+			<div className="hidden md:flex md:col-start-3 md:col-span-2 flex-col items-start md:items-end space-y-4 w-full">
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 w-full">
 					{hasPhotos ? aboutInfo?.photos?.slice(0, 4).map((photo, idx) => (
 						<div key={idx} className="w-full aspect-square overflow-hidden shadow-sm -z-10">
 							<img

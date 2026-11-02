@@ -16,9 +16,9 @@ export default async function ContactPage() {
 			{/* Text Section */}
 			<div className="space-y-8">
 				{/* Description */}
-				<div className="space-y-4">
+				<div className="space-y-4 mb-40">
 					<h1 className="font-insitutrial_bold text-3xl sm:text-4xl">Pile XP</h1>
-					<p className="font-insitutrial text-base sm:text-lg whitespace-pre-line">
+					<p className="font-insitutrial text-base sm:text-lg whitespace-pre-line lg:columns-2 lg:gap-8 [column-fill:balance]">
 						{contactInfo?.description}
 					</p>
 				</div>
@@ -36,7 +36,7 @@ export default async function ContactPage() {
 				</div>
 
 				{/* Contact Info */}
-				<div className="space-y-4">
+				<div className="space-y-4 mt-40">
 					<h1 className="font-insitutrial_bold text-3xl sm:text-4xl">Contact</h1>
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
 						<div className="flex items-center underline gap-2">
@@ -49,15 +49,11 @@ export default async function ContactPage() {
 						</div>
 					</div>
 				</div>
-
-				<p className="font-insitutrial text-center text-lg sm:text-xl mt-8">
-					On sera ravis de vous rencontrer ou de discuter de votre projet !
-				</p>
 			</div>
 
 			{/* Photo Section */}
 			{contactInfo?.photo_url ? (
-				<div className="flex items-center justify-center mt-8 md:mt-0">
+				<div className="flex items-start justify-center mt-8 md:mt-0">
 					<div className="w-full max-w-md md:max-w-full aspect-square overflow-hidden shadow-sm">
 						<img
 							src={getPublicUrl([contactInfo.photo_url])[0]}

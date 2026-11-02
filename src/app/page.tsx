@@ -1,4 +1,5 @@
 "use client";
+import { LogoAnimation } from "@/components/LogoAnimation";
 import { capitalizeFirstLetter } from "@/utils/general";
 import React, { useEffect, useState } from "react";
 import { listProjectsByTag, listProjectsOverview } from "./actions/projects/list";
@@ -7,12 +8,23 @@ import { listTags } from "./actions/tag/list";
 
 const Home: React.FC = () => {
   const [projects, setProjects] = useState<ProjectPreview[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>("");
 
   const fetchProjects = async (tag?: string) => {
-    const data = tag ? await listProjectsByTag(tag) : await listProjectsOverview();
-    setProjects(data || []);
+    setIsLoading(true);
+    setLoadError(false);
+    try {
+      const data = tag ? await listProjectsByTag(tag) : await listProjectsOverview();
+      if (data === null) throw new Error("Unable to load projects");
+      setProjects(data);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -47,6 +59,7 @@ const Home: React.FC = () => {
         <div className="lg:col-span-3 col-span-2" />
         <div className="lg:pb-8 pb-4">
           <select
+            disabled={isLoading}
             value={selectedTag}
             onChange={handleTagSelect}
             className="border text-gray-400 border-gray-300 p-2 w-full"
@@ -62,15 +75,28 @@ const Home: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:gap-8 md:px-4 lg:px-8">
-        {projects.length === 0 && (
+        {isLoading && (
+          <div className="md:col-span-3 lg:col-span-4 flex min-h-[50vh] items-center justify-center" role="status" aria-label="Chargement des projets">
+            <LogoAnimation logo="/pile_xp_logo_animation_black.json" />
+          </div>
+        )}
+        {!isLoading && loadError && (
+          <div className="md:col-span-3 lg:col-span-4 px-6 py-16 text-center text-gray-500" role="alert">
+            <p>Impossible de charger les projets pour le moment.</p>
+            <button type="button" onClick={() => fetchProjects(selectedTag || undefined)} className="mt-4 font-insitutrial_bold text-pink">
+              Réessayer
+            </button>
+          </div>
+        )}
+        {!isLoading && !loadError && projects.length === 0 && (
           <div className="md:col-span-3 lg:col-span-4 border border-gray-200 px-6 py-16 text-center text-gray-500">
             <p className="font-insitutrial_bold text-xl text-pink">Aucun projet disponible</p>
             <p className="mt-2 font-insitutrial">
-              Les projets sans media valide ont ete nettoyes. Ajoutez-en depuis l&apos;admin quand vous serez pret.
+              Aucun projet à afficher pour le moment.
             </p>
           </div>
         )}
-        {projects.map((project) => (
+        {!isLoading && !loadError && projects.map((project) => (
           <div key={project.id} className="relative">
             <a
               key={project.id}
@@ -97,7 +123,7 @@ const Home: React.FC = () => {
                   )}
 
                   {/* Overlay */}
-                  <div className="absolute inset-0 bg-pink bg-opacity-50 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                  <div className="absolute inset-0 bg-slate-400 bg-opacity-50 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
                     <div />
                     <p className="text-white font-insitutrial_bold text-xl text-center">
                       {project.title}

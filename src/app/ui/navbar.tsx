@@ -2,11 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { IoIosMenu, IoMdClose } from "react-icons/io";
 import { useState } from "react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) => href === "/"
+    ? pathname === "/" || pathname.startsWith("/projects/")
+    : pathname === href || pathname.startsWith(`${href}/`);
+  const activeLinkProps = (href: string) => ({
+    "aria-current": isActive(href) ? "page" as const : undefined,
+    className: isActive(href) ? "font-insitutrial_bold" : undefined,
+  });
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -20,13 +29,17 @@ export default function Navbar() {
             alt="logo"
             width={40}
             height={18}
-            className="mt-2 lg:w-auto w-8"
+            className=" lg:w-auto w-8"
           />
         </div>
 
         <div className="flex-1 ">
           <div className="lg:grid grid-cols-4 text-white items-center bg-pink relative">
-            <div className="bg-zinc-400 flex justify-between xl:mr-10 py-2 md:px-10 px-4 xl:px-12 lg:text-center text-white">
+            <div className="bg-zinc-400 flex justify-start gap-4 px-2 xl:mr-10 py-1 lg:text-center text-white">
+
+              <span className="font-insitutrial_bold">
+                Pile.XP
+              </span>
               <p>Agence d&apos;architecture</p>
             </div>
 
@@ -42,12 +55,12 @@ export default function Navbar() {
             </div>
 
             <div className="lg:flex justify-around lg:mr-10 hidden">
-              <Link href={"/about"}>L&apos;Atelier</Link>
-              <Link href={"/"}>Nos Projets</Link>
+              <Link href={"/about"} {...activeLinkProps("/about")}>Agence</Link>
+              <Link href={"/"} {...activeLinkProps("/")}>Projets</Link>
             </div>
             <div className="lg:flex justify-around -ml-8 mr-10 hidden">
-              <Link href={"/journal"}>Journal PXP</Link>
-              <Link href={"/contact"}>Contact</Link>
+              <Link href={"/journal"} {...activeLinkProps("/journal")}>Journal</Link>
+              <Link href={"/contact"} {...activeLinkProps("/contact")}>Contact</Link>
             </div>
           </div>
         </div>
@@ -55,11 +68,10 @@ export default function Navbar() {
 
       {/* --- Mobile menu overlay --- */}
       <div
-        className={`fixed inset-0 bg-pink z-[100] lg:hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-full pointer-events-none"
-        }`}
+        className={`fixed inset-0 bg-pink z-[100] lg:hidden transition-all duration-300 ease-in-out ${isMenuOpen
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-full pointer-events-none"
+          }`}
       >
         <div className="flex flex-col h-full">
           <div className="flex justify-end p-4 md:p-8">
@@ -75,29 +87,33 @@ export default function Navbar() {
           <nav className="flex-1 flex flex-col items-center justify-center gap-8 md:gap-12 text-white">
             <Link
               href={"/about"}
+              aria-current={activeLinkProps("/about")["aria-current"]}
               onClick={closeMenu}
-              className="text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity"
+              className={`text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity ${activeLinkProps("/about").className ?? ""}`}
             >
               L&apos;Atelier
             </Link>
             <Link
               href={"/"}
+              aria-current={activeLinkProps("/")["aria-current"]}
               onClick={closeMenu}
-              className="text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity"
+              className={`text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity ${activeLinkProps("/").className ?? ""}`}
             >
               Nos Projets
             </Link>
             <Link
               href={"/journal"}
+              aria-current={activeLinkProps("/journal")["aria-current"]}
               onClick={closeMenu}
-              className="text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity"
+              className={`text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity ${activeLinkProps("/journal").className ?? ""}`}
             >
               Journal PXP
             </Link>
             <Link
               href={"/contact"}
+              aria-current={activeLinkProps("/contact")["aria-current"]}
               onClick={closeMenu}
-              className="text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity"
+              className={`text-3xl sm:text-4xl md:text-5xl hover:opacity-70 transition-opacity ${activeLinkProps("/contact").className ?? ""}`}
             >
               Contact
             </Link>
@@ -106,7 +122,7 @@ export default function Navbar() {
       </div>
 
       {/* --- Bottom logo bar --- */}
-      <div style={{ position: "sticky", top: "-3em"}}  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-8 md:px-12 lg:px-16">
+      <div style={{ position: "sticky", top: "-3em" }} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-8 md:px-12 lg:px-16">
         <div className="lg:col-span-3 md:col-span-2 col-span-1" />
         <div className="bg-pink lg:p-4 px-2 py-2 xl:py-6 flex-1">
           <div className="relative h-8 sm:h-10 md:h-12 lg:h-14 w-auto lg:mt-2">
